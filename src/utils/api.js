@@ -4,7 +4,7 @@ import axios from 'axios'
 const getBaseURL = () => {
   // If VITE_API_URL is set, use it
   if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL
+    return import.meta.env.VITE_API_URL || 'http://arzaquna.developteam.site/api'
   }
   // In development, use relative path (Vite proxy handles it)
   // In production, use relative path (Vercel rewrites handle it)
