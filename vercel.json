@@ -8,11 +8,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://arzaquna.developteam.site/api/$1"
+      "destination": "https://arzaquna.developteam.site/api/$1"
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "https://your-backend-url.com/uploads/$1"
+      "destination": "https://arzaquna.developteam.site/uploads/$1"
     },
     {
       "source": "/(.*)",

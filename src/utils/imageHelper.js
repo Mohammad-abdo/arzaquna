@@ -11,19 +11,14 @@ export const getImageUrl = (imagePath) => {
     return imagePath
   }
   
-  // Use environment variable for backend URL in production
-  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  // Use environment variable for backend URL, or default to production URL
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://arzaquna.developteam.site'
   
-  // If backend URL is set, use it (production)
-  if (backendUrl) {
-    const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
-    return `${backendUrl}${cleanPath}`
-  }
-  
-  // In development, use relative path (Vite proxy handles it)
-  // In production without env var, use relative path (Vercel rewrites handle it)
+  // Ensure path starts with /
   const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
-  return cleanPath
+  
+  // Return full URL with backend
+  return `${backendUrl}${cleanPath}`
 }
 
 /**

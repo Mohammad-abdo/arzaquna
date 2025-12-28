@@ -1,14 +1,13 @@
 import axios from 'axios'
 
-// Use environment variable for backend URL in production, or relative path in development
+// Use environment variable for backend URL, or default to production URL
 const getBaseURL = () => {
-  // If VITE_API_URL is set, use it
+  // If VITE_API_URL is set, use it (for different environments)
   if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL || 'http://arzaquna.developteam.site/api'
+    return import.meta.env.VITE_API_URL
   }
-  // In development, use relative path (Vite proxy handles it)
-  // In production, use relative path (Vercel rewrites handle it)
-  return '/api'
+  // Default to production API URL
+  return 'https://arzaquna.developteam.site/api'
 }
 
 const api = axios.create({
