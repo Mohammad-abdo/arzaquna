@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi'
+import { FiPlus, FiEdit, FiTrash2, FiX, FiUpload } from 'react-icons/fi'
 import { getImageUrl } from '../utils/imageHelper'
 
 const Sliders = () => {
@@ -9,6 +9,8 @@ const Sliders = () => {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingSlider, setEditingSlider] = useState(null)
+  const [preview, setPreview] = useState(null)
+  const [existingImage, setExistingImage] = useState(null)
   const [formData, setFormData] = useState({
     titleAr: '',
     titleEn: '',
@@ -67,6 +69,8 @@ const Sliders = () => {
 
       setShowModal(false)
       setEditingSlider(null)
+      setPreview(null)
+      setExistingImage(null)
       setFormData({
         titleAr: '',
         titleEn: '',
@@ -95,7 +99,29 @@ const Sliders = () => {
       order: slider.order || 0,
       image: null
     })
+    if (slider.image) {
+      setExistingImage(getImageUrl(slider.image))
+      setPreview(null)
+    } else {
+      setExistingImage(null)
+      setPreview(null)
+    }
     setShowModal(true)
+  }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setFormData({ ...formData, image: file })
+      setPreview(URL.createObjectURL(file))
+      setExistingImage(null) // Clear existing image when new one is selected
+    }
+  }
+
+  const removeImage = () => {
+    setFormData({ ...formData, image: null })
+    setPreview(null)
+    setExistingImage(null)
   }
 
   const handleDelete = async (id) => {
@@ -117,6 +143,8 @@ const Sliders = () => {
         <button
           onClick={() => {
             setEditingSlider(null)
+            setPreview(null)
+            setExistingImage(null)
             setFormData({
               titleAr: '',
               titleEn: '',
@@ -252,13 +280,39 @@ const Sliders = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                  required={!editingSlider}
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
+                {(preview || existingImage) && (
+                  <div className="relative inline-block mb-4">
+                    <img
+                      src={preview || existingImage}
+                      alt="Preview"
+                      className="w-48 h-32 object-cover rounded-lg border-2 border-gray-200 shadow-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      title="Remove image"
+                    >
+                      <FiX size={16} />
+                    </button>
+                  </div>
+                )}
+                <label className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors border-2 border-dashed border-gray-300">
+                  <FiUpload size={20} />
+                  <span className="font-medium">
+                    {existingImage ? 'Change Image' : 'Upload Image'}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    required={!editingSlider && !existingImage}
+                    className="hidden"
+                  />
+                </label>
+                {editingSlider && !existingImage && !preview && (
+                  <p className="text-xs text-gray-500 mt-1">No image currently set. Upload a new image.</p>
+                )}
               </div>
               <div className="flex gap-2 justify-end">
                 <button
@@ -266,6 +320,8 @@ const Sliders = () => {
                   onClick={() => {
                     setShowModal(false)
                     setEditingSlider(null)
+                    setPreview(null)
+                    setExistingImage(null)
                   }}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"
                 >
