@@ -23,7 +23,7 @@ const UserCreate = () => {
     setLoading(true)
 
     try {
-      const response = await api.post('/users', formData)
+      const response = await api.post('/admin/users', formData)
       if (response.data.success) {
         toast.success(t('users.userCreated'))
         navigate('/users')

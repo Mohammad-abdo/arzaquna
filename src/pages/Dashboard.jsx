@@ -58,57 +58,43 @@ const Dashboard = () => {
 
   const fetchChartData = async () => {
     try {
-      // Mock data for charts - replace with actual API call
-      const response = await api.get('/admin/dashboard/charts').catch(() => null)
+      // Try to fetch real chart data from API
+      const response = await api.get('/admin/dashboard/charts')
       
       if (response?.data?.success) {
         setChartData(response.data.data)
       } else {
-        // Generate mock data for demonstration
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-        setChartData({
-          ordersOverTime: months.map((month, i) => ({
-            month,
-            orders: Math.floor(Math.random() * 100) + 20,
-            revenue: Math.floor(Math.random() * 5000) + 1000
-          })),
-          categoryDistribution: [
-            { name: 'Cows', value: 25 },
-            { name: 'Camels', value: 20 },
-            { name: 'Birds', value: 18 },
-            { name: 'Sheep', value: 15 },
-            { name: 'Fish', value: 12 },
-            { name: 'Other', value: 10 }
-          ],
-          userGrowth: months.map((month, i) => ({
-            month,
-            users: Math.floor(Math.random() * 50) + 10
-          }))
-        })
+        // Fallback to mock data
+        generateMockChartData()
       }
     } catch (error) {
       // Use mock data on error
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-      setChartData({
-            ordersOverTime: months.map((month, i) => ({
-              month,
-              orders: Math.floor(Math.random() * 100) + 20,
-              revenue: Math.floor(Math.random() * 5000) + 1000
-            })),
-            categoryDistribution: [
-              { name: 'Cows', value: 25 },
-              { name: 'Camels', value: 20 },
-              { name: 'Birds', value: 18 },
-              { name: 'Sheep', value: 15 },
-              { name: 'Fish', value: 12 },
-              { name: 'Other', value: 10 }
-            ],
-            userGrowth: months.map((month, i) => ({
-              month,
-              users: Math.floor(Math.random() * 50) + 10
-            }))
-          })
+      console.warn('Failed to fetch chart data, using mock data:', error)
+      generateMockChartData()
     }
+  }
+
+  const generateMockChartData = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+    setChartData({
+      ordersOverTime: months.map((month, i) => ({
+        month,
+        orders: Math.floor(Math.random() * 100) + 20,
+        revenue: Math.floor(Math.random() * 5000) + 1000
+      })),
+      categoryDistribution: [
+        { name: 'Cows', value: 25 },
+        { name: 'Camels', value: 20 },
+        { name: 'Birds', value: 18 },
+        { name: 'Sheep', value: 15 },
+        { name: 'Fish', value: 12 },
+        { name: 'Other', value: 10 }
+      ],
+      userGrowth: months.map((month, i) => ({
+        month,
+        users: Math.floor(Math.random() * 50) + 10
+      }))
+    })
   }
 
   if (loading) {
