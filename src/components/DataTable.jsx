@@ -80,6 +80,16 @@ const DataTable = ({
       })
     }
     
+    // Delete button - prioritize it by placing it earlier
+    if (onDelete) {
+      buttons.push({
+        icon: FiTrash2,
+        label: 'Delete',
+        color: 'text-red-600 hover:bg-red-50 hover:text-red-700',
+        action: () => onDelete(row)
+      })
+    }
+    
     if (onApprove && !row.isApproved) {
       buttons.push({
         icon: FiCheckCircle,
@@ -113,15 +123,6 @@ const DataTable = ({
         label: 'Unblock',
         color: 'text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700',
         action: () => onUnblock(row)
-      })
-    }
-    
-    if (onDelete) {
-      buttons.push({
-        icon: FiTrash2,
-        label: 'Delete',
-        color: 'text-red-600 hover:bg-red-50 hover:text-red-700',
-        action: () => onDelete(row)
       })
     }
     
@@ -205,8 +206,8 @@ const DataTable = ({
                           )}
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1 justify-end">
-                          {actionButtons.slice(0, 4).map((btn, idx) => {
+                        <div className="flex items-center gap-1 justify-end flex-wrap">
+                          {actionButtons.slice(0, 6).map((btn, idx) => {
                             const Icon = btn.icon
                             return (
                               <button

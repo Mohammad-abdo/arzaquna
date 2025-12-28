@@ -53,36 +53,36 @@ const Users = () => {
     if (!window.confirm(`${t('users.confirmDelete')} ${user.fullName}?`)) return
 
     try {
-      await api.delete(`/users/${user.id}`)
+      await api.delete(`/admin/users/${user.id}`)
       toast.success(t('users.userDeleted'))
       fetchUsers()
     } catch (error) {
-      toast.error('Failed to delete user')
+      toast.error(error.response?.data?.message || 'Failed to delete user')
     }
   }
 
   const handleBlock = async (user) => {
     if (!window.confirm(`Block ${user.fullName}?`)) return
     try {
-      const response = await api.put(`/users/${user.id}/status`, { isActive: false })
+      const response = await api.put(`/admin/users/${user.id}/block`)
       if (response.data.success) {
         toast.success('User blocked successfully')
         fetchUsers()
       }
     } catch (error) {
-      toast.error('Failed to block user')
+      toast.error(error.response?.data?.message || 'Failed to block user')
     }
   }
 
   const handleUnblock = async (user) => {
     try {
-      const response = await api.put(`/users/${user.id}/status`, { isActive: true })
+      const response = await api.put(`/admin/users/${user.id}/unblock`)
       if (response.data.success) {
         toast.success('User unblocked successfully')
         fetchUsers()
       }
     } catch (error) {
-      toast.error('Failed to unblock user')
+      toast.error(error.response?.data?.message || 'Failed to unblock user')
     }
   }
 

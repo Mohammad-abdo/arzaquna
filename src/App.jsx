@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Users from './pages/Users'
 import UserCreate from './pages/UserCreate'
+import UserEdit from './pages/UserEdit'
 import UserView from './pages/UserView'
 import Vendors from './pages/Vendors'
 import VendorView from './pages/VendorView'
@@ -53,7 +54,7 @@ function App() {
             <Route path="users" element={<Users />} />
             <Route path="users/create" element={<UserCreate />} />
             <Route path="users/:id" element={<UserView />} />
-            <Route path="users/:id/edit" element={<Users />} />
+            <Route path="users/:id/edit" element={<UserEdit />} />
             <Route path="vendors" element={<Vendors />} />
             <Route path="vendors/:id" element={<VendorView />} />
             <Route path="vendor-applications" element={<VendorApplications />} />
