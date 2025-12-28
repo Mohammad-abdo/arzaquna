@@ -11,12 +11,18 @@ export const getImageUrl = (imagePath) => {
     return imagePath
   }
   
-  // Use relative path - vite.config.js proxies /uploads to backend
-  // This allows images to be served through the Vite dev server proxy
-  // Ensure path starts with /
-  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
+  // Use environment variable for backend URL in production
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
   
-  // Return relative path (will be proxied by Vite)
+  // If backend URL is set, use it (production)
+  if (backendUrl) {
+    const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
+    return `${backendUrl}${cleanPath}`
+  }
+  
+  // In development, use relative path (Vite proxy handles it)
+  // In production without env var, use relative path (Vercel rewrites handle it)
+  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
   return cleanPath
 }
 
