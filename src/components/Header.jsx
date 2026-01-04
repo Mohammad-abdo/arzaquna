@@ -170,7 +170,7 @@ const Header = () => {
 
   return (
     <header
-      className={`bg-white shadow-md border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm bg-white/95 ${
+      className={`bg-white border-b border-gray-200 sticky top-0 z-50 ${
         isRTL ? 'text-right' : 'text-left'
       }`}
       dir={isRTL ? 'rtl' : 'ltr'}
@@ -191,7 +191,7 @@ const Header = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('header.globalSearch')}
-                className={`w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all ${
+                className={`w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 focus:bg-white transition-colors duration-150 ${
                   isRTL ? 'text-right pr-10 pl-4' : 'text-left'
                 }`}
               />
@@ -217,7 +217,7 @@ const Header = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-xl border border-gray-200 max-h-96 overflow-y-auto z-50"
+                  className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50"
                 >
                   {searchResults.map((result, index) => (
                     <motion.div
@@ -249,7 +249,7 @@ const Header = () => {
             <div className="relative" ref={langMenuRef}>
               <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200 bg-white"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-150 border border-gray-300 bg-white"
               >
                 <FiGlobe size={18} className="text-gray-600" />
                 <span className="text-sm font-medium text-gray-700 uppercase hidden sm:inline">
@@ -266,20 +266,20 @@ const Header = () => {
                     exit={{ opacity: 0, y: -10 }}
                     className={`absolute top-full mt-2 ${
                       isRTL ? 'left-0' : 'right-0'
-                    } bg-white rounded-xl shadow-xl border border-gray-200 min-w-[140px] z-50 overflow-hidden`}
+                    } bg-white rounded-lg shadow-lg border border-gray-200 min-w-[140px] z-50 overflow-hidden`}
                   >
                     <button
                       onClick={() => changeLanguage('en')}
-                      className={`w-full px-4 py-2.5 text-sm hover:bg-primary-50 transition-colors flex items-center gap-2 ${
-                        currentLanguage === 'en' ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-700'
+                      className={`w-full px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors duration-150 flex items-center gap-2 ${
+                        currentLanguage === 'en' ? 'bg-gray-50 text-gray-900 font-semibold' : 'text-gray-700'
                       }`}
                     >
                       <span>🇬🇧</span> English
                     </button>
                     <button
                       onClick={() => changeLanguage('ar')}
-                      className={`w-full px-4 py-2.5 text-sm hover:bg-primary-50 transition-colors flex items-center gap-2 ${
-                        currentLanguage === 'ar' ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-700'
+                      className={`w-full px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors duration-150 flex items-center gap-2 ${
+                        currentLanguage === 'ar' ? 'bg-gray-50 text-gray-900 font-semibold' : 'text-gray-700'
                       }`}
                     >
                       <span>🇸🇦</span> العربية
@@ -293,7 +293,7 @@ const Header = () => {
             <div className="relative" ref={notificationsRef}>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2.5 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200 bg-white"
+                className="relative p-2.5 rounded-lg hover:bg-gray-50 transition-colors duration-150 border border-gray-300 bg-white"
               >
                 <FiBell size={18} className="text-gray-600" />
                 {notifications.length > 0 && (
@@ -309,17 +309,18 @@ const Header = () => {
                     exit={{ opacity: 0, y: -10 }}
                     className={`absolute top-full mt-2 ${
                       isRTL ? 'left-0' : 'right-0'
-                    } bg-white rounded-xl shadow-xl border border-gray-200 w-80 max-h-96 overflow-y-auto z-50`}
+                    } bg-white rounded-lg shadow-lg border border-gray-200 w-80 z-50 flex flex-col`}
+                    style={{ maxHeight: '384px' }}
                   >
-                    <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-white">
-                      <h3 className="font-semibold text-gray-800">{t('header.notifications')}</h3>
+                    <div className="p-4 border-b border-gray-200 bg-gray-50">
+                      <h3 className="font-semibold text-gray-900">{t('header.notifications')}</h3>
                     </div>
-                    <div className="max-h-80 overflow-y-auto">
+                    <div className="overflow-y-auto flex-1" style={{ maxHeight: '320px' }}>
                       {notifications.length > 0 ? (
                         notifications.map((notification, index) => (
                           <div
                             key={notification.id || index}
-                            className="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                            className="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-150"
                             onClick={() => {
                               navigate('/notifications')
                               setShowNotifications(false)
@@ -346,7 +347,7 @@ const Header = () => {
                             navigate('/notifications')
                             setShowNotifications(false)
                           }}
-                          className="w-full text-sm text-primary-600 hover:text-primary-700 font-medium"
+                          className="w-full text-sm text-gray-700 hover:text-gray-900 font-medium transition-colors duration-150"
                         >
                           {t('common.view')} {t('header.notifications')}
                         </button>
@@ -361,9 +362,9 @@ const Header = () => {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 bg-white"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-150 border border-gray-300 bg-white"
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold text-sm">
                   {user?.fullName?.charAt(0).toUpperCase()}
                 </div>
                 <div className={`hidden md:block ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -381,11 +382,11 @@ const Header = () => {
                     exit={{ opacity: 0, y: -10 }}
                     className={`absolute top-full mt-2 ${
                       isRTL ? 'left-0' : 'right-0'
-                    } bg-white rounded-xl shadow-xl border border-gray-200 min-w-[220px] z-50 overflow-hidden`}
+                    } bg-white rounded-lg shadow-lg border border-gray-200 min-w-[220px] z-50 overflow-hidden`}
                   >
-                    <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-white">
-                      <p className="text-sm font-semibold text-gray-800">{user?.fullName}</p>
-                      <p className="text-xs text-gray-500 mt-1">{user?.email}</p>
+                    <div className="p-4 border-b border-gray-200 bg-gray-50">
+                      <p className="text-sm font-semibold text-gray-900">{user?.fullName}</p>
+                      <p className="text-xs text-gray-600 mt-1">{user?.email}</p>
                     </div>
                     <div className="p-2">
                       <button
@@ -411,7 +412,7 @@ const Header = () => {
                       <div className="border-t border-gray-200 my-1"></div>
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors duration-150"
                       >
                         <FiLogOut size={18} />
                         {t('header.logout')}

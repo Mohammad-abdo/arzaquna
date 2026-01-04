@@ -73,10 +73,10 @@ const Categories = () => {
             <img
               src={getImageUrl(category.image)}
               alt={category.nameEn}
-              className="w-14 h-14 object-cover rounded-xl mr-4 border-2 border-gray-200 shadow-sm"
+              className="w-14 h-14 object-cover rounded-lg mr-4 border border-gray-200"
             />
           ) : (
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md mr-4">
+            <div className="w-14 h-14 rounded-lg bg-gray-800 flex items-center justify-center text-white font-semibold mr-4">
               <FiLayers size={24} />
             </div>
           )}
@@ -93,11 +93,11 @@ const Categories = () => {
       icon: FiCheckCircle,
       render: (category) => (
         <span
-          className={`px-3 py-1.5 inline-flex text-xs font-bold rounded-full ${
-            category.isActive
-              ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300'
-              : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border border-red-300'
-          }`}
+                      className={`px-3 py-1.5 inline-flex text-xs font-medium rounded-md ${
+                        category.isActive
+                          ? 'bg-gray-100 text-gray-700 border border-gray-300'
+                          : 'bg-gray-200 text-gray-700 border border-gray-300'
+                      }`}
         >
           {category.isActive ? t('common.active') : t('common.inactive')}
         </span>
@@ -114,14 +114,14 @@ const Categories = () => {
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('categories.title')}</h1>
+            <h1 className="text-3xl font-semibold text-gray-900">{t('categories.title')}</h1>
             <p className="text-gray-600 mt-1 text-lg">{t('categories.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/categories/create')}
-            className="flex items-center gap-2 px-5 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 font-medium"
           >
-            <FiPlus size={20} /> {t('categories.addCategory')}
+            <FiPlus size={18} /> {t('categories.addCategory')}
           </button>
         </div>
       </motion.div>

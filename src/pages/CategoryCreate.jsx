@@ -140,7 +140,7 @@ const CategoryCreate = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 max-w-2xl">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-8 max-w-2xl">
           <div className="space-y-6">
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
@@ -152,7 +152,7 @@ const CategoryCreate = () => {
                 value={formData.nameAr}
                 onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
                 placeholder="اسم الفئة"
               />
             </div>
@@ -167,7 +167,7 @@ const CategoryCreate = () => {
                 value={formData.nameEn}
                 onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
                 placeholder="Category Name"
               />
             </div>
@@ -181,7 +181,7 @@ const CategoryCreate = () => {
                 type="text"
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
                 placeholder={t('categories.iconPlaceholder')}
               />
             </div>
@@ -197,7 +197,7 @@ const CategoryCreate = () => {
                     <img
                       src={preview || existingImage}
                       alt="Preview"
-                      className="w-32 h-32 object-cover rounded-xl border-2 border-gray-200 shadow-md"
+                      className="w-32 h-32 object-cover rounded-lg border border-gray-200"
                     />
                     <button
                       type="button"
@@ -209,7 +209,7 @@ const CategoryCreate = () => {
                     </button>
                   </div>
                 )}
-                <label className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors border-2 border-dashed border-gray-300">
+                <label className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-150 border border-dashed border-gray-300">
                   <FiUpload size={20} />
                   <span className="font-medium">
                     {existingImage ? 'Change Image' : 'Upload Image'}
@@ -229,14 +229,14 @@ const CategoryCreate = () => {
             <button
               type="button"
               onClick={() => navigate('/categories')}
-              className="px-6 py-3 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-150 font-medium"
             >
               {t('common.cancel')}
             </button>
             <button
               type="submit"
               disabled={loading || saving}
-              className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 font-semibold"
+              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 font-medium"
             >
               {loading ? 'Loading...' : saving ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? t('common.update') : t('common.create'))}
             </button>

@@ -105,11 +105,11 @@ const Products = () => {
       accessor: 'isApproved',
       render: (product) => (
         <span
-          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-            product.isApproved
-              ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300'
-              : 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border border-yellow-300'
-          }`}
+                      className={`px-3 py-1 inline-flex text-xs leading-5 font-medium rounded-md ${
+                        product.isApproved
+                          ? 'bg-gray-100 text-gray-700 border border-gray-300'
+                          : 'bg-gray-200 text-gray-700 border border-gray-300'
+                      }`}
         >
           {product.isApproved ? t('common.approved') : t('common.pending')}
         </span>
@@ -126,14 +126,14 @@ const Products = () => {
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('products.title')}</h1>
+            <h1 className="text-3xl font-semibold text-gray-900">{t('products.title')}</h1>
             <p className="text-gray-600 mt-1 text-lg">{t('products.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/products/create')}
-            className="flex items-center gap-2 px-4 py-2 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 font-medium"
           >
-            <FiPlus /> {t('common.create')} {t('products.product')}
+            <FiPlus size={18} /> {t('common.create')} {t('products.product')}
           </button>
         </div>
 
@@ -144,10 +144,10 @@ const Products = () => {
                 setFilter('pending')
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
+              className={`px-4 py-2 rounded-lg transition-colors duration-150 font-medium ${
                 filter === 'pending'
-                  ? 'glass-card text-white shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600'
-                  : 'glass-card text-gray-700 border border-white/40 hover:bg-white/50 bg-white/70'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
               {t('common.pending')}
@@ -157,10 +157,10 @@ const Products = () => {
                 setFilter('approved')
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
+              className={`px-4 py-2 rounded-lg transition-colors duration-150 font-medium ${
                 filter === 'approved'
-                  ? 'glass-card text-white shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600'
-                  : 'glass-card text-gray-700 border border-white/40 hover:bg-white/50 bg-white/70'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
               {t('common.approved')}
@@ -170,10 +170,10 @@ const Products = () => {
                 setFilter('all')
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
+              className={`px-4 py-2 rounded-lg transition-colors duration-150 font-medium ${
                 filter === 'all'
-                  ? 'glass-card text-white shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600'
-                  : 'glass-card text-gray-700 border border-white/40 hover:bg-white/50 bg-white/70'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
               All
@@ -188,7 +188,7 @@ const Products = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="flex-1 max-w-md px-4 py-2 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 backdrop-blur-xl bg-white/70"
+              className="flex-1 max-w-md px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
             />
           )}
         </div>

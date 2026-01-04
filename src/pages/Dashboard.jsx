@@ -117,7 +117,6 @@ const Dashboard = () => {
       title: t('dashboard.totalUsers'),
       value: stats?.totalUsers || 0,
       icon: FiUsers,
-      color: 'bg-gradient-to-br from-blue-500 to-blue-600',
       trend: 'up',
       trendValue: 12
     },
@@ -125,7 +124,6 @@ const Dashboard = () => {
       title: t('dashboard.totalVendors'),
       value: stats?.totalVendors || 0,
       icon: FiShoppingBag,
-      color: 'bg-gradient-to-br from-green-500 to-green-600',
       trend: 'up',
       trendValue: 8
     },
@@ -133,7 +131,6 @@ const Dashboard = () => {
       title: t('dashboard.totalProducts'),
       value: stats?.totalProducts || 0,
       icon: FiPackage,
-      color: 'bg-gradient-to-br from-purple-500 to-purple-600',
       trend: 'up',
       trendValue: 15
     },
@@ -141,7 +138,6 @@ const Dashboard = () => {
       title: t('dashboard.totalOrders'),
       value: stats?.totalOrders || 0,
       icon: FiShoppingCart,
-      color: 'bg-gradient-to-br from-orange-500 to-orange-600',
       trend: 'up',
       trendValue: 22
     },
@@ -149,7 +145,6 @@ const Dashboard = () => {
       title: t('dashboard.pendingApplications'),
       value: stats?.pendingApplications || 0,
       icon: FiCheckCircle,
-      color: 'bg-gradient-to-br from-yellow-500 to-yellow-600',
       trend: 'down',
       trendValue: 5
     },
@@ -157,21 +152,18 @@ const Dashboard = () => {
       title: t('dashboard.pendingProducts'),
       value: stats?.pendingProducts || 0,
       icon: FiAlertCircle,
-      color: 'bg-gradient-to-br from-red-500 to-red-600',
       trend: null
     },
     {
       title: t('dashboard.categories'),
       value: stats?.totalCategories || 0,
       icon: FiLayers,
-      color: 'bg-gradient-to-br from-indigo-500 to-indigo-600',
       trend: null
     },
     {
       title: t('dashboard.totalRevenue'),
       value: `$${(stats?.totalRevenue || 0).toLocaleString()}`,
       icon: FiDollarSign,
-      color: 'bg-gradient-to-br from-emerald-500 to-emerald-600',
       trend: 'up',
       trendValue: 18
     }
@@ -184,7 +176,7 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8 relative z-10"
       >
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">{t('dashboard.title')}</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('dashboard.title')}</h1>
         <p className="text-gray-600 text-lg">{t('dashboard.welcome')}</p>
       </motion.div>
 
@@ -200,12 +192,12 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Orders & Revenue Over Time */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="glass-card rounded-2xl p-6 backdrop-blur-xl"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.15 }}
+            className="bg-white rounded-lg border border-gray-200 p-6"
           >
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.ordersRevenue')}</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">{t('dashboard.ordersRevenue')}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData.ordersOverTime}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -241,12 +233,12 @@ const Dashboard = () => {
 
           {/* Category Distribution */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="glass-card rounded-2xl p-6 backdrop-blur-xl"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.15 }}
+            className="bg-white rounded-lg border border-gray-200 p-6"
           >
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.categoryDistribution')}</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">{t('dashboard.categoryDistribution')}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -270,12 +262,12 @@ const Dashboard = () => {
 
           {/* User Growth */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="glass-card rounded-2xl p-6 backdrop-blur-xl lg:col-span-2"
+            transition={{ delay: 0.2, duration: 0.15 }}
+            className="bg-white rounded-lg border border-gray-200 p-6 lg:col-span-2"
           >
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.userGrowth')}</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">{t('dashboard.userGrowth')}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData.userGrowth}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -297,40 +289,37 @@ const Dashboard = () => {
 
       {/* Recent Activity Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="glass-card rounded-2xl p-6 backdrop-blur-xl relative z-10"
+        transition={{ delay: 0.25, duration: 0.15 }}
+        className="bg-white rounded-lg border border-gray-200 p-6"
       >
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.recentActivity')}</h3>
-        <div className="space-y-3">
+        <h3 className="text-base font-semibold text-gray-900 mb-4">{t('dashboard.recentActivity')}</h3>
+        <div className="space-y-2">
           {[
             { action: t('dashboard.newVendorApplication'), time: `2 ${t('dashboard.minutesAgo')}`, type: 'info' },
             { action: t('dashboard.productApproved'), time: `15 ${t('dashboard.minutesAgo')}`, type: 'success' },
             { action: t('dashboard.newOrderReceived'), time: `1 ${t('dashboard.hoursAgo')}`, type: 'info' },
             { action: t('dashboard.userRegistered'), time: `2 ${t('dashboard.hoursAgo')}`, type: 'info' }
           ].map((activity, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 + index * 0.1 }}
-              className="flex items-center justify-between p-4 glass-gradient rounded-xl hover:bg-white/40 transition-all duration-300 backdrop-blur-sm"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-150 border border-gray-100"
             >
               <div>
-                <p className="text-sm font-medium text-gray-800">{activity.action}</p>
-                <p className="text-xs text-gray-600 mt-1">{activity.time}</p>
+                <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                <p className="text-xs text-gray-600 mt-0.5">{activity.time}</p>
               </div>
               <span
-                className={`px-3 py-1.5 text-xs font-semibold rounded-full backdrop-blur-sm ${
+                className={`px-2.5 py-1 text-xs font-medium rounded-md ${
                   activity.type === 'success'
-                    ? 'bg-green-500/20 text-green-700 border border-green-500/30'
-                    : 'bg-blue-500/20 text-blue-700 border border-blue-500/30'
+                    ? 'bg-gray-100 text-gray-700 border border-gray-200'
+                    : 'bg-gray-100 text-gray-700 border border-gray-200'
                 }`}
               >
                 {activity.type}
               </span>
-            </motion.div>
+            </div>
           ))}
         </div>
       </motion.div>

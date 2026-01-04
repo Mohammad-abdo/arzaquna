@@ -93,7 +93,7 @@ const Users = () => {
       icon: FiUser,
       render: (user) => (
         <div className="flex items-center">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold shadow-md mr-3">
+          <div className="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center text-white font-semibold mr-3">
             {user.fullName?.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -122,7 +122,7 @@ const Users = () => {
       accessor: 'role',
       icon: FiShield,
       render: (user) => (
-        <span className="px-3 py-1.5 inline-flex text-xs font-bold rounded-full bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
+        <span className="px-3 py-1.5 inline-flex text-xs font-medium rounded-md bg-gray-100 text-gray-700 border border-gray-300">
           {user.role}
         </span>
       )
@@ -132,11 +132,11 @@ const Users = () => {
       accessor: 'isActive',
       render: (user) => (
         <span
-          className={`px-3 py-1.5 inline-flex text-xs font-bold rounded-full ${
-            user.isActive 
-              ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300' 
-              : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border border-red-300'
-          }`}
+                      className={`px-3 py-1.5 inline-flex text-xs font-medium rounded-md ${
+                        user.isActive 
+                          ? 'bg-gray-100 text-gray-700 border border-gray-300' 
+                          : 'bg-gray-200 text-gray-700 border border-gray-300'
+                      }`}
         >
           {user.isActive ? t('common.active') : t('common.inactive')}
         </span>
@@ -153,20 +153,20 @@ const Users = () => {
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('users.title')}</h1>
+            <h1 className="text-3xl font-semibold text-gray-900">{t('users.title')}</h1>
             <p className="text-gray-600 mt-1 text-lg">{t('users.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/users/create')}
-            className="flex items-center gap-2 px-5 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 font-medium"
           >
-            <FiPlus size={20} /> {t('users.addUser')}
+            <FiPlus size={18} /> {t('users.addUser')}
           </button>
         </div>
 
         <div className="flex gap-4 mb-6">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={20} />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={18} />
             <input
               type="text"
               placeholder={t('users.searchUsers')}
@@ -175,7 +175,7 @@ const Users = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2.5 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 backdrop-blur-xl bg-white/70"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
             />
           </div>
           <select
@@ -184,7 +184,7 @@ const Users = () => {
               setRoleFilter(e.target.value)
               setPage(1)
             }}
-            className="px-4 py-2.5 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 backdrop-blur-xl bg-white/70"
+            className="px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
           >
             <option value="">{t('users.allRoles')}</option>
             <option value="USER">User</option>

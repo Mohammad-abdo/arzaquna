@@ -47,30 +47,27 @@ const VendorView = () => {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
+      <div className="p-8 min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600"></div>
       </div>
     )
   }
 
   if (!vendor) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-8 min-h-screen bg-gray-50">
         <div className="text-center py-12">
-          <p className="text-gray-500">Vendor not found</p>
+          <p className="text-gray-600">Vendor not found</p>
         </div>
       </div>
     )
   }
 
-  const specialization = Array.isArray(vendor.specialization)
-    ? vendor.specialization
-    : typeof vendor.specialization === 'string'
-    ? JSON.parse(vendor.specialization)
-    : []
+  // Get categories from the categories relation instead of specialization
+  const categories = vendor.categories?.map(vc => vc.category) || []
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen bg-gray-50">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,26 +76,26 @@ const VendorView = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/vendors')}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-150"
             >
-              <FiArrowLeft size={20} />
+              <FiArrowLeft size={20} className="text-gray-700" />
             </button>
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg">
-                <FiShoppingBag size={32} />
+              <div className="w-16 h-16 rounded-lg bg-gray-700 flex items-center justify-center text-white">
+                <FiShoppingBag size={28} />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-gray-800">{vendor.storeName}</h1>
+                <h1 className="text-3xl font-semibold text-gray-900">{vendor.storeName}</h1>
                 <p className="text-gray-600 mt-1">{vendor.user?.fullName || 'N/A'}</p>
               </div>
             </div>
           </div>
           <button
             onClick={toggleVendorStatus}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-150 ${
               vendor.isApproved
-                ? 'bg-yellow-600 text-white hover:bg-yellow-700'
-                : 'bg-green-600 text-white hover:bg-green-700'
+                ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                : 'bg-gray-800 text-white hover:bg-gray-900'
             }`}
           >
             {vendor.isApproved ? <FiLock size={18} /> : <FiCheckCircle size={18} />}
@@ -108,77 +105,77 @@ const VendorView = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <FiShoppingBag className="text-primary-600" size={24} />
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                <FiShoppingBag className="text-gray-600" size={20} />
                 Store Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiShoppingBag size={16} />
                     Store Name
                   </label>
-                  <p className="text-lg font-bold text-gray-800">{vendor.storeName}</p>
+                  <p className="text-base font-semibold text-gray-900 mt-1">{vendor.storeName}</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiUser size={16} />
                     Owner
                   </label>
-                  <p className="text-lg font-bold text-gray-800">{vendor.user?.fullName || 'N/A'}</p>
+                  <p className="text-base font-semibold text-gray-900 mt-1">{vendor.user?.fullName || 'N/A'}</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiMapPin size={16} />
                     City
                   </label>
-                  <p className="text-lg font-medium text-gray-800">{vendor.city}</p>
+                  <p className="text-base text-gray-700 mt-1">{vendor.city}</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiMapPin size={16} />
                     Region
                   </label>
-                  <p className="text-lg font-medium text-gray-800">{vendor.region}</p>
+                  <p className="text-base text-gray-700 mt-1">{vendor.region}</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiPhone size={16} />
                     WhatsApp
                   </label>
-                  <p className="text-lg font-medium text-gray-800">{vendor.whatsappNumber}</p>
+                  <p className="text-base text-gray-700 mt-1">{vendor.whatsappNumber}</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiPhone size={16} />
                     Call Number
                   </label>
-                  <p className="text-lg font-medium text-gray-800">{vendor.callNumber}</p>
+                  <p className="text-base text-gray-700 mt-1">{vendor.callNumber}</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <FiPackage size={16} />
                     Experience
                   </label>
-                  <p className="text-lg font-medium text-gray-800">{vendor.yearsOfExperience} {t('vendors.years')}</p>
+                  <p className="text-base text-gray-700 mt-1">{vendor.yearsOfExperience} {t('vendors.years')}</p>
                 </div>
               </div>
             </div>
 
-            {specialization.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <FiPackage className="text-primary-600" size={24} />
+            {categories.length > 0 && (
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <FiPackage className="text-gray-600" size={20} />
                   {t('vendors.specialization')}
                 </h2>
-                <div className="flex flex-wrap gap-3">
-                  {specialization.map((spec, index) => (
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
                     <span
-                      key={index}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-300"
+                      key={category.id}
+                      className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md text-sm font-medium border border-gray-200"
                     >
-                      {spec}
+                      {category.nameEn}
                     </span>
                   ))}
                 </div>
@@ -187,44 +184,44 @@ const VendorView = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Owner Information</h3>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="text-base font-semibold text-gray-900 mb-4">Owner Information</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1">
                     <FiUser size={16} />
                     Full Name
                   </label>
-                  <p className="text-gray-800">{vendor.user?.fullName || 'N/A'}</p>
+                  <p className="text-gray-700">{vendor.user?.fullName || 'N/A'}</p>
                 </div>
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1">
                     <FiMail size={16} />
                     Email
                   </label>
-                  <p className="text-gray-800">{vendor.user?.email || 'N/A'}</p>
+                  <p className="text-gray-700">{vendor.user?.email || 'N/A'}</p>
                 </div>
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1">
                     <FiPhone size={16} />
                     Phone
                   </label>
-                  <p className="text-gray-800">{vendor.user?.phone || 'N/A'}</p>
+                  <p className="text-gray-700">{vendor.user?.phone || 'N/A'}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Status</h3>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="text-base font-semibold text-gray-900 mb-4">Status</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-semibold text-gray-600">Vendor Status</label>
+                  <label className="text-sm font-medium text-gray-600">Vendor Status</label>
                   <div className="mt-2">
                     <span
-                      className={`inline-flex px-4 py-2 text-sm font-bold rounded-full ${
+                      className={`inline-flex px-3 py-1.5 text-sm font-medium rounded-md ${
                         vendor.isApproved
-                          ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300'
-                          : 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border border-yellow-300'
+                          ? 'bg-gray-100 text-gray-700 border border-gray-300'
+                          : 'bg-gray-200 text-gray-700 border border-gray-300'
                       }`}
                     >
                       {vendor.isApproved ? t('common.approved') : t('common.pending')}
@@ -232,10 +229,10 @@ const VendorView = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-600">Products Count</label>
+                  <label className="text-sm font-medium text-gray-600">Products Count</label>
                   <div className="mt-2 flex items-center gap-2">
-                    <FiPackage size={20} className="text-primary-600" />
-                    <span className="text-2xl font-bold text-gray-800">{vendor._count?.products || 0}</span>
+                    <FiPackage size={18} className="text-gray-600" />
+                    <span className="text-xl font-semibold text-gray-900">{vendor._count?.products || 0}</span>
                   </div>
                 </div>
               </div>

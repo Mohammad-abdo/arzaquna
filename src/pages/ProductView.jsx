@@ -55,7 +55,7 @@ const ProductView = () => {
   if (!product) {
     return (
       <div className="p-8 min-h-screen relative">
-        <div className="text-center py-12 glass-card rounded-2xl backdrop-blur-xl bg-white/70">
+        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
           <p className="text-gray-500">Product not found</p>
         </div>
       </div>
@@ -75,12 +75,12 @@ const ProductView = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/products')}
-              className="p-2.5 rounded-xl glass-card hover:bg-white/50 transition-all duration-300 backdrop-blur-xl"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-150"
             >
               <FiArrowLeft size={20} className="text-gray-700" />
             </button>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{product.nameEn}</h1>
+              <h1 className="text-3xl font-semibold text-gray-900">{product.nameEn}</h1>
               <p className="text-gray-600 mt-1 text-lg">{product.nameAr}</p>
             </div>
           </div>
@@ -89,14 +89,14 @@ const ProductView = () => {
               <>
                 <button
                   onClick={() => approveProduct(true)}
-                  className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-150 font-medium"
                 >
                   <FiCheck size={18} />
                   Approve
                 </button>
                 <button
                   onClick={() => approveProduct(false)}
-                  className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-red-500 to-rose-600"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-150 font-medium"
                 >
                   <FiX size={18} />
                   Reject
@@ -105,7 +105,7 @@ const ProductView = () => {
             )}
             <button
               onClick={() => navigate(`/products/${id}/edit`)}
-              className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 font-medium"
             >
               <FiEdit size={18} />
               Edit
@@ -118,8 +118,8 @@ const ProductView = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Images */}
             {images.length > 0 && (
-              <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Images</h2>
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-base font-semibold text-gray-900 mb-4">Images</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {images.map((image, index) => (
                     <img
@@ -134,8 +134,8 @@ const ProductView = () => {
             )}
 
             {/* Descriptions */}
-            <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Descriptions</h2>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-base font-semibold text-gray-900 mb-4">Descriptions</h2>
               <div className="space-y-4">
                 {product.descriptionEn && (
                   <div>
@@ -154,8 +154,8 @@ const ProductView = () => {
 
             {/* Specifications */}
             {product.specifications && product.specifications.length > 0 && (
-              <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Specifications</h2>
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-base font-semibold text-gray-900 mb-4">Specifications</h2>
                 <div className="space-y-3">
                   {product.specifications.map((spec, index) => (
                     <div key={index} className="flex items-start gap-4 pb-3 border-b border-gray-200 last:border-b-0">
@@ -180,8 +180,8 @@ const ProductView = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Product Info Card */}
-            <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Product Information</h2>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-base font-semibold text-gray-900 mb-4">Product Information</h2>
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-gray-600">Status</label>

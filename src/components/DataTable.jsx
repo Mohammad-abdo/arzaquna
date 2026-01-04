@@ -35,10 +35,10 @@ const DataTable = ({
 
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl shadow-xl border border-white/40 overflow-hidden backdrop-blur-xl bg-white/70">
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
-          <p className="mt-4 text-gray-700 font-medium">Loading data...</p>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-3 border-gray-300 border-t-gray-600"></div>
+          <p className="mt-4 text-gray-600 text-sm font-medium">Loading data...</p>
         </div>
       </div>
     )
@@ -46,16 +46,12 @@ const DataTable = ({
 
   if (!data || data.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-2xl shadow-xl border border-white/40 p-16 text-center backdrop-blur-xl bg-white/70"
-      >
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
-          <FiEye className="text-blue-600" size={24} />
+      <div className="bg-white rounded-lg border border-gray-200 p-16 text-center">
+        <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-gray-100 flex items-center justify-center">
+          <FiEye className="text-gray-600" size={20} />
         </div>
-        <p className="text-gray-700 text-lg font-medium">{emptyMessage}</p>
-      </motion.div>
+        <p className="text-gray-600 text-base font-medium">{emptyMessage}</p>
+      </div>
     )
   }
 
@@ -130,29 +126,24 @@ const DataTable = ({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="glass-card rounded-2xl shadow-xl border border-white/40 overflow-hidden backdrop-blur-xl bg-white/70"
-    >
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm border-b-2 border-blue-100">
+            <tr className="bg-gray-50 border-b border-gray-200">
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
                 >
                   <div className="flex items-center gap-2">
-                    {column.icon && <column.icon size={16} className="text-blue-600" />}
+                    {column.icon && <column.icon size={16} className="text-gray-600" />}
                     {column.header}
                   </div>
                 </th>
               ))}
               {actions && (
-                <th className="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider sticky right-0 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm">
+                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider sticky right-0 bg-gray-50">
                   Actions
                 </th>
               )}
@@ -167,7 +158,7 @@ const DataTable = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: rowIndex * 0.03 }}
-                  className="hover:bg-blue-50/50 transition-all duration-200 group"
+                  className="hover:bg-gray-50 transition-colors duration-150"
                 >
                   {columns.map((column, colIndex) => (
                     <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-gray-700">
@@ -175,7 +166,7 @@ const DataTable = ({
                     </td>
                   ))}
                   {actions && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white group-hover:bg-blue-50/50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white group-hover:bg-gray-50">
                       {actionMenu && actionButtons.length > 3 ? (
                         <div className="relative flex justify-end">
                           <button
@@ -232,18 +223,18 @@ const DataTable = ({
       </div>
 
       {pagination && pagination.pages > 1 && (
-        <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-primary-50 border-t-2 border-primary-200 flex items-center justify-between">
-          <div className="text-sm text-gray-700 font-medium">
-            Showing page <span className="font-bold text-primary-600">{pagination.page}</span> of{' '}
-            <span className="font-bold text-primary-600">{pagination.pages}</span>
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+          <div className="text-sm text-gray-600 font-medium">
+            Showing page <span className="font-semibold text-gray-900">{pagination.page}</span> of{' '}
+            <span className="font-semibold text-gray-900">{pagination.pages}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => onPageChange(pagination.page - 1)}
               disabled={pagination.page === 1}
-              className="p-2 rounded-lg border-2 border-gray-300 hover:border-primary-500 hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all disabled:hover:border-gray-300 disabled:hover:bg-transparent"
+              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             >
-              <FiChevronLeft size={20} className="text-gray-700" />
+              <FiChevronLeft size={18} className="text-gray-700" />
             </button>
             <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
@@ -261,10 +252,10 @@ const DataTable = ({
                   <button
                     key={pageNum}
                     onClick={() => onPageChange(pageNum)}
-                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-150 ${
                       pagination.page === pageNum
-                        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105'
-                        : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600 border border-gray-200'
+                        ? 'bg-gray-900 text-white'
+                        : 'text-gray-700 hover:bg-gray-100 border border-gray-200'
                     }`}
                   >
                     {pageNum}
@@ -275,14 +266,14 @@ const DataTable = ({
             <button
               onClick={() => onPageChange(pagination.page + 1)}
               disabled={pagination.page === pagination.pages}
-              className="p-2 rounded-lg border-2 border-gray-300 hover:border-primary-500 hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all disabled:hover:border-gray-300 disabled:hover:bg-transparent"
+              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             >
-              <FiChevronRight size={20} className="text-gray-700" />
+              <FiChevronRight size={18} className="text-gray-700" />
             </button>
           </div>
         </div>
       )}
-    </motion.div>
+    </div>
   )
 }
 
