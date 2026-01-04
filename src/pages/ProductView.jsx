@@ -46,16 +46,16 @@ const ProductView = () => {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div className="p-8 min-h-screen flex items-center justify-center relative">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
       </div>
     )
   }
 
   if (!product) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
-        <div className="text-center py-12">
+      <div className="p-8 min-h-screen relative">
+        <div className="text-center py-12 glass-card rounded-2xl backdrop-blur-xl bg-white/70">
           <p className="text-gray-500">Product not found</p>
         </div>
       </div>
@@ -65,22 +65,23 @@ const ProductView = () => {
   const images = getImageUrls(product.images)
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="relative z-10"
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/products')}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2.5 rounded-xl glass-card hover:bg-white/50 transition-all duration-300 backdrop-blur-xl"
             >
-              <FiArrowLeft size={20} />
+              <FiArrowLeft size={20} className="text-gray-700" />
             </button>
             <div>
-              <h1 className="text-4xl font-bold text-gray-800">{product.nameEn}</h1>
-              <p className="text-gray-600 mt-1">{product.nameAr}</p>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{product.nameEn}</h1>
+              <p className="text-gray-600 mt-1 text-lg">{product.nameAr}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -88,14 +89,14 @@ const ProductView = () => {
               <>
                 <button
                   onClick={() => approveProduct(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600"
                 >
                   <FiCheck size={18} />
                   Approve
                 </button>
                 <button
                   onClick={() => approveProduct(false)}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-red-500 to-rose-600"
                 >
                   <FiX size={18} />
                   Reject
@@ -104,7 +105,7 @@ const ProductView = () => {
             )}
             <button
               onClick={() => navigate(`/products/${id}/edit`)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
             >
               <FiEdit size={18} />
               Edit
@@ -117,7 +118,7 @@ const ProductView = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Images */}
             {images.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Images</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {images.map((image, index) => (
@@ -133,7 +134,7 @@ const ProductView = () => {
             )}
 
             {/* Descriptions */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Descriptions</h2>
               <div className="space-y-4">
                 {product.descriptionEn && (
@@ -153,7 +154,7 @@ const ProductView = () => {
 
             {/* Specifications */}
             {product.specifications && product.specifications.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Specifications</h2>
                 <div className="space-y-3">
                   {product.specifications.map((spec, index) => (
@@ -179,7 +180,7 @@ const ProductView = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Product Info Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Product Information</h2>
               <div className="space-y-4">
                 <div>

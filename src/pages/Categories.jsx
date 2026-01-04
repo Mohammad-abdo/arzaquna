@@ -106,20 +106,20 @@ const Categories = () => {
   ]
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="mb-6 relative z-10"
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">{t('categories.title')}</h1>
-            <p className="text-gray-600 mt-1">{t('categories.subtitle')}</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('categories.title')}</h1>
+            <p className="text-gray-600 mt-1 text-lg">{t('categories.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/categories/create')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg hover:shadow-xl font-semibold"
+            className="flex items-center gap-2 px-5 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
           >
             <FiPlus size={20} /> {t('categories.addCategory')}
           </button>

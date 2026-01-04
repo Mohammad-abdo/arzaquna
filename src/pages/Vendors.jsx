@@ -151,22 +151,22 @@ const Vendors = () => {
   ]
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="mb-6 relative z-10"
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">{t('vendors.title')}</h1>
-            <p className="text-gray-600 mt-1">{t('vendors.subtitle')}</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('vendors.title')}</h1>
+            <p className="text-gray-600 mt-1 text-lg">{t('vendors.subtitle')}</p>
           </div>
         </div>
 
         <div className="flex gap-4 mb-6">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={20} />
             <input
               type="text"
               placeholder={t('vendors.searchVendors')}
@@ -175,7 +175,7 @@ const Vendors = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+              className="w-full pl-10 pr-4 py-2.5 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all backdrop-blur-xl bg-white/70"
             />
           </div>
         </div>

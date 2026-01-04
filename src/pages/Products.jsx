@@ -74,8 +74,8 @@ const Products = () => {
       accessor: 'nameEn',
       render: (product) => (
         <div>
-          <div className="text-sm font-medium text-white">{product.nameEn}</div>
-          <div className="text-sm text-white/80">{product.nameAr}</div>
+          <div className="text-sm font-medium text-gray-700">{product.nameEn}</div>
+          <div className="text-sm text-gray-500">{product.nameAr}</div>
         </div>
       )
     },
@@ -83,21 +83,21 @@ const Products = () => {
       header: t('products.vendor'),
       accessor: 'vendor',
       render: (product) => (
-        <div className="text-sm text-white">{product.vendor?.user?.fullName || 'N/A'}</div>
+        <div className="text-sm text-gray-700">{product.vendor?.user?.fullName || 'N/A'}</div>
       )
     },
     {
       header: t('products.category'),
       accessor: 'category',
       render: (product) => (
-        <div className="text-sm text-white">{product.category?.nameEn || 'N/A'}</div>
+        <div className="text-sm text-gray-700">{product.category?.nameEn || 'N/A'}</div>
       )
     },
     {
       header: t('products.price'),
       accessor: 'price',
       render: (product) => (
-        <div className="text-sm font-semibold text-white">${product.price}</div>
+        <div className="text-sm font-semibold text-gray-700">${product.price}</div>
       )
     },
     {
@@ -105,10 +105,10 @@ const Products = () => {
       accessor: 'isApproved',
       render: (product) => (
         <span
-          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full backdrop-blur-sm ${
+          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
             product.isApproved
-              ? 'bg-green-500/30 text-green-100 border border-green-500/50'
-              : 'bg-yellow-500/30 text-yellow-100 border border-yellow-500/50'
+              ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300'
+              : 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border border-yellow-300'
           }`}
         >
           {product.isApproved ? t('common.approved') : t('common.pending')}
@@ -126,12 +126,12 @@ const Products = () => {
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-white drop-shadow-lg">{t('products.title')}</h1>
-            <p className="text-white/90 mt-1 text-lg">{t('products.subtitle')}</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('products.title')}</h1>
+            <p className="text-gray-600 mt-1 text-lg">{t('products.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/products/create')}
-            className="flex items-center gap-2 px-4 py-2 glass-card text-white rounded-xl hover:bg-white/30 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold"
+            className="flex items-center gap-2 px-4 py-2 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
           >
             <FiPlus /> {t('common.create')} {t('products.product')}
           </button>
@@ -146,8 +146,8 @@ const Products = () => {
               }}
               className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
                 filter === 'pending'
-                  ? 'glass-card text-white shadow-lg bg-white/30'
-                  : 'glass-gradient text-gray-700 border border-white/20 hover:bg-white/20'
+                  ? 'glass-card text-white shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600'
+                  : 'glass-card text-gray-700 border border-white/40 hover:bg-white/50 bg-white/70'
               }`}
             >
               {t('common.pending')}
@@ -159,8 +159,8 @@ const Products = () => {
               }}
               className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
                 filter === 'approved'
-                  ? 'glass-card text-white shadow-lg bg-white/30'
-                  : 'glass-gradient text-gray-700 border border-white/20 hover:bg-white/20'
+                  ? 'glass-card text-white shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600'
+                  : 'glass-card text-gray-700 border border-white/40 hover:bg-white/50 bg-white/70'
               }`}
             >
               {t('common.approved')}
@@ -172,8 +172,8 @@ const Products = () => {
               }}
               className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
                 filter === 'all'
-                  ? 'glass-card text-white shadow-lg bg-white/30'
-                  : 'glass-gradient text-gray-700 border border-white/20 hover:bg-white/20'
+                  ? 'glass-card text-white shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600'
+                  : 'glass-card text-gray-700 border border-white/40 hover:bg-white/50 bg-white/70'
               }`}
             >
               All
@@ -188,7 +188,7 @@ const Products = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="flex-1 max-w-md px-4 py-2 glass-card border border-white/20 rounded-xl focus:ring-2 focus:ring-white/50 focus:border-white/40 backdrop-blur-xl text-white placeholder:text-white/70"
+              className="flex-1 max-w-md px-4 py-2 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 backdrop-blur-xl bg-white/70"
             />
           )}
         </div>

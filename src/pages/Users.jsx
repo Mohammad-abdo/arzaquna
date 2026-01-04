@@ -145,20 +145,20 @@ const Users = () => {
   ]
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="mb-6 relative z-10"
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">{t('users.title')}</h1>
-            <p className="text-gray-600 mt-1">{t('users.subtitle')}</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{t('users.title')}</h1>
+            <p className="text-gray-600 mt-1 text-lg">{t('users.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/users/create')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg hover:shadow-xl font-semibold"
+            className="flex items-center gap-2 px-5 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
           >
             <FiPlus size={20} /> {t('users.addUser')}
           </button>
@@ -166,7 +166,7 @@ const Users = () => {
 
         <div className="flex gap-4 mb-6">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={20} />
             <input
               type="text"
               placeholder={t('users.searchUsers')}
@@ -175,7 +175,7 @@ const Users = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2.5 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 backdrop-blur-xl bg-white/70"
             />
           </div>
           <select
@@ -184,7 +184,7 @@ const Users = () => {
               setRoleFilter(e.target.value)
               setPage(1)
             }}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="px-4 py-2.5 glass-card border border-white/40 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 backdrop-blur-xl bg-white/70"
           >
             <option value="">{t('users.allRoles')}</option>
             <option value="USER">User</option>

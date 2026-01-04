@@ -35,10 +35,10 @@ const DataTable = ({
 
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden backdrop-blur-xl">
+      <div className="glass-card rounded-2xl shadow-xl border border-white/40 overflow-hidden backdrop-blur-xl bg-white/70">
         <div className="p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white/50 border-t-white"></div>
-          <p className="mt-4 text-white font-medium">Loading data...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
+          <p className="mt-4 text-gray-700 font-medium">Loading data...</p>
         </div>
       </div>
     )
@@ -49,12 +49,12 @@ const DataTable = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-2xl shadow-2xl border border-white/20 p-16 text-center backdrop-blur-xl"
+        className="glass-card rounded-2xl shadow-xl border border-white/40 p-16 text-center backdrop-blur-xl bg-white/70"
       >
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-          <FiEye className="text-white" size={24} />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+          <FiEye className="text-blue-600" size={24} />
         </div>
-        <p className="text-white text-lg font-medium">{emptyMessage}</p>
+        <p className="text-gray-700 text-lg font-medium">{emptyMessage}</p>
       </motion.div>
     )
   }
@@ -134,31 +134,31 @@ const DataTable = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden backdrop-blur-xl"
+      className="glass-card rounded-2xl shadow-xl border border-white/40 overflow-hidden backdrop-blur-xl bg-white/70"
     >
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-white/20 backdrop-blur-sm border-b-2 border-white/30">
+            <tr className="bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm border-b-2 border-blue-100">
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider"
+                  className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
                 >
                   <div className="flex items-center gap-2">
-                    {column.icon && <column.icon size={16} />}
+                    {column.icon && <column.icon size={16} className="text-blue-600" />}
                     {column.header}
                   </div>
                 </th>
               ))}
               {actions && (
-                <th className="px-6 py-4 text-right text-xs font-bold text-white uppercase tracking-wider sticky right-0 bg-white/20 backdrop-blur-sm">
+                <th className="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider sticky right-0 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm">
                   Actions
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-gray-100">
             {data.map((row, rowIndex) => {
               const actionButtons = getActionButtons(row)
               return (
@@ -167,15 +167,15 @@ const DataTable = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: rowIndex * 0.03 }}
-                  className="hover:bg-white/10 transition-all duration-200 group backdrop-blur-sm"
+                  className="hover:bg-blue-50/50 transition-all duration-200 group"
                 >
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-white">
+                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-gray-700">
                       {column.render ? column.render(row) : row[column.accessor]}
                     </td>
                   ))}
                   {actions && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white/5 group-hover:bg-white/10 backdrop-blur-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white group-hover:bg-blue-50/50">
                       {actionMenu && actionButtons.length > 3 ? (
                         <div className="relative flex justify-end">
                           <button

@@ -45,16 +45,16 @@ const UserView = () => {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
+      <div className="p-8 min-h-screen flex items-center justify-center relative">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
       </div>
     )
   }
 
   if (!user) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
-        <div className="text-center py-12">
+      <div className="p-8 min-h-screen relative">
+        <div className="text-center py-12 glass-card rounded-2xl backdrop-blur-xl bg-white/70">
           <p className="text-gray-500">User not found</p>
         </div>
       </div>
@@ -62,31 +62,32 @@ const UserView = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="relative z-10"
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/users')}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2.5 rounded-xl glass-card hover:bg-white/50 transition-all duration-300 backdrop-blur-xl"
             >
-              <FiArrowLeft size={20} />
+              <FiArrowLeft size={20} className="text-gray-700" />
             </button>
             <div>
-              <h1 className="text-4xl font-bold text-gray-800">{user.fullName}</h1>
-              <p className="text-gray-600 mt-1">{user.email}</p>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{user.fullName}</h1>
+              <p className="text-gray-600 mt-1 text-lg">{user.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={toggleUserStatus}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 glass-card backdrop-blur-xl font-semibold ${
                 user.isActive
-                  ? 'bg-red-600 text-white hover:bg-red-700'
-                  : 'bg-green-600 text-white hover:bg-green-700'
+                  ? 'bg-red-500/20 text-red-700 border border-red-300 hover:bg-red-500/30'
+                  : 'bg-green-500/20 text-green-700 border border-green-300 hover:bg-green-500/30'
               }`}
             >
               {user.isActive ? <FiXCircle size={18} /> : <FiCheckCircle size={18} />}
@@ -94,7 +95,7 @@ const UserView = () => {
             </button>
             <button
               onClick={() => navigate(`/users/${id}/edit`)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 glass-card text-white rounded-xl hover:bg-white/40 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-600"
             >
               <FiEdit size={18} />
               {t('common.edit')}
@@ -104,9 +105,9 @@ const UserView = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <FiUser className="text-primary-600" size={24} />
+                <FiUser className="text-blue-600" size={24} />
                 User Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -145,7 +146,7 @@ const UserView = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            <div className="glass-card rounded-2xl shadow-xl border border-white/40 p-6 backdrop-blur-xl bg-white/70">
               <h3 className="text-lg font-bold text-gray-800 mb-4">Status</h3>
               <div className="space-y-4">
                 <div>
