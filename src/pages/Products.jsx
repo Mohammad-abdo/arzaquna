@@ -74,8 +74,8 @@ const Products = () => {
       accessor: 'nameEn',
       render: (product) => (
         <div>
-          <div className="text-sm font-medium text-gray-900">{product.nameEn}</div>
-          <div className="text-sm text-gray-500">{product.nameAr}</div>
+          <div className="text-sm font-medium text-white">{product.nameEn}</div>
+          <div className="text-sm text-white/80">{product.nameAr}</div>
         </div>
       )
     },
@@ -83,21 +83,21 @@ const Products = () => {
       header: t('products.vendor'),
       accessor: 'vendor',
       render: (product) => (
-        <div className="text-sm text-gray-900">{product.vendor?.user?.fullName || 'N/A'}</div>
+        <div className="text-sm text-white">{product.vendor?.user?.fullName || 'N/A'}</div>
       )
     },
     {
       header: t('products.category'),
       accessor: 'category',
       render: (product) => (
-        <div className="text-sm text-gray-900">{product.category?.nameEn || 'N/A'}</div>
+        <div className="text-sm text-white">{product.category?.nameEn || 'N/A'}</div>
       )
     },
     {
       header: t('products.price'),
       accessor: 'price',
       render: (product) => (
-        <div className="text-sm font-semibold text-gray-900">${product.price}</div>
+        <div className="text-sm font-semibold text-white">${product.price}</div>
       )
     },
     {
@@ -105,10 +105,10 @@ const Products = () => {
       accessor: 'isApproved',
       render: (product) => (
         <span
-          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full backdrop-blur-sm ${
             product.isApproved
-              ? 'bg-green-100 text-green-800'
-              : 'bg-yellow-100 text-yellow-800'
+              ? 'bg-green-500/30 text-green-100 border border-green-500/50'
+              : 'bg-yellow-500/30 text-yellow-100 border border-yellow-500/50'
           }`}
         >
           {product.isApproved ? t('common.approved') : t('common.pending')}
@@ -118,20 +118,20 @@ const Products = () => {
   ]
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="mb-6 relative z-10"
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">{t('products.title')}</h1>
-            <p className="text-gray-600 mt-1">{t('products.subtitle')}</p>
+            <h1 className="text-4xl font-bold text-white drop-shadow-lg">{t('products.title')}</h1>
+            <p className="text-white/90 mt-1 text-lg">{t('products.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/products/create')}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 glass-card text-white rounded-xl hover:bg-white/30 transition-all duration-300 shadow-lg backdrop-blur-xl font-semibold"
           >
             <FiPlus /> {t('common.create')} {t('products.product')}
           </button>
@@ -144,10 +144,10 @@ const Products = () => {
                 setFilter('pending')
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-lg transition-colors ${
+              className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
                 filter === 'pending'
-                  ? 'bg-primary-600 text-white shadow-sm'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'glass-card text-white shadow-lg bg-white/30'
+                  : 'glass-gradient text-gray-700 border border-white/20 hover:bg-white/20'
               }`}
             >
               {t('common.pending')}
@@ -157,10 +157,10 @@ const Products = () => {
                 setFilter('approved')
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-lg transition-colors ${
+              className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
                 filter === 'approved'
-                  ? 'bg-primary-600 text-white shadow-sm'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'glass-card text-white shadow-lg bg-white/30'
+                  : 'glass-gradient text-gray-700 border border-white/20 hover:bg-white/20'
               }`}
             >
               {t('common.approved')}
@@ -170,10 +170,10 @@ const Products = () => {
                 setFilter('all')
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-lg transition-colors ${
+              className={`px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-xl font-semibold ${
                 filter === 'all'
-                  ? 'bg-primary-600 text-white shadow-sm'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'glass-card text-white shadow-lg bg-white/30'
+                  : 'glass-gradient text-gray-700 border border-white/20 hover:bg-white/20'
               }`}
             >
               All
@@ -188,13 +188,14 @@ const Products = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="flex-1 max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="flex-1 max-w-md px-4 py-2 glass-card border border-white/20 rounded-xl focus:ring-2 focus:ring-white/50 focus:border-white/40 backdrop-blur-xl text-white placeholder:text-white/70"
             />
           )}
         </div>
       </motion.div>
 
-      <DataTable
+      <div className="relative z-10">
+        <DataTable
         columns={columns}
         data={products}
         loading={loading}
@@ -205,6 +206,7 @@ const Products = () => {
         actions={true}
         emptyMessage={t('products.noProducts')}
       />
+      </div>
     </div>
   )
 }

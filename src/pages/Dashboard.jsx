@@ -178,14 +178,33 @@ const Dashboard = () => {
   ]
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 min-h-screen relative overflow-hidden" style={{
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+      backgroundSize: '400% 400%',
+      animation: 'gradient 15s ease infinite'
+    }}>
+      <style>{`
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
+      
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-8 relative z-10"
       >
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">{t('dashboard.title')}</h1>
-        <p className="text-gray-600">{t('dashboard.welcome')}</p>
+        <h1 className="text-5xl font-bold text-white mb-2 drop-shadow-lg">{t('dashboard.title')}</h1>
+        <p className="text-white/90 text-lg">{t('dashboard.welcome')}</p>
       </motion.div>
 
       {/* Stats Cards */}
@@ -203,7 +222,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            className="glass-card rounded-2xl p-6 backdrop-blur-xl"
           >
             <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.ordersRevenue')}</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -244,7 +263,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            className="glass-card rounded-2xl p-6 backdrop-blur-xl"
           >
             <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.categoryDistribution')}</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -273,7 +292,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2"
+            className="glass-card rounded-2xl p-6 backdrop-blur-xl lg:col-span-2"
           >
             <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.userGrowth')}</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -300,7 +319,7 @@ const Dashboard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        className="glass-card rounded-2xl p-6 backdrop-blur-xl relative z-10"
       >
         <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('dashboard.recentActivity')}</h3>
         <div className="space-y-3">
@@ -315,17 +334,17 @@ const Dashboard = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 + index * 0.1 }}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between p-4 glass-gradient rounded-xl hover:bg-white/40 transition-all duration-300 backdrop-blur-sm"
             >
               <div>
                 <p className="text-sm font-medium text-gray-800">{activity.action}</p>
-                <p className="text-xs text-gray-500">{activity.time}</p>
+                <p className="text-xs text-gray-600 mt-1">{activity.time}</p>
               </div>
               <span
-                className={`px-2 py-1 text-xs rounded-full ${
+                className={`px-3 py-1.5 text-xs font-semibold rounded-full backdrop-blur-sm ${
                   activity.type === 'success'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-blue-100 text-blue-800'
+                    ? 'bg-green-500/20 text-green-700 border border-green-500/30'
+                    : 'bg-blue-500/20 text-blue-700 border border-blue-500/30'
                 }`}
               >
                 {activity.type}

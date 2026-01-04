@@ -35,10 +35,10 @@ const DataTable = ({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+      <div className="glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden backdrop-blur-xl">
         <div className="p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
-          <p className="mt-4 text-gray-500 font-medium">Loading data...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white/50 border-t-white"></div>
+          <p className="mt-4 text-white font-medium">Loading data...</p>
         </div>
       </div>
     )
@@ -49,12 +49,12 @@ const DataTable = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl shadow-lg border border-gray-200 p-16 text-center"
+        className="glass-card rounded-2xl shadow-2xl border border-white/20 p-16 text-center backdrop-blur-xl"
       >
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-          <FiEye className="text-gray-400" size={24} />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+          <FiEye className="text-white" size={24} />
         </div>
-        <p className="text-gray-500 text-lg font-medium">{emptyMessage}</p>
+        <p className="text-white text-lg font-medium">{emptyMessage}</p>
       </motion.div>
     )
   }
@@ -134,16 +134,16 @@ const DataTable = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+      className="glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden backdrop-blur-xl"
     >
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-gradient-to-r from-primary-50 via-primary-100 to-primary-50 border-b-2 border-primary-200">
+            <tr className="bg-white/20 backdrop-blur-sm border-b-2 border-white/30">
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="px-6 py-4 text-left text-xs font-bold text-primary-700 uppercase tracking-wider"
+                  className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider"
                 >
                   <div className="flex items-center gap-2">
                     {column.icon && <column.icon size={16} />}
@@ -152,13 +152,13 @@ const DataTable = ({
                 </th>
               ))}
               {actions && (
-                <th className="px-6 py-4 text-right text-xs font-bold text-primary-700 uppercase tracking-wider sticky right-0 bg-gradient-to-r from-primary-50 via-primary-100 to-primary-50">
+                <th className="px-6 py-4 text-right text-xs font-bold text-white uppercase tracking-wider sticky right-0 bg-white/20 backdrop-blur-sm">
                   Actions
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="divide-y divide-white/10">
             {data.map((row, rowIndex) => {
               const actionButtons = getActionButtons(row)
               return (
@@ -167,15 +167,15 @@ const DataTable = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: rowIndex * 0.03 }}
-                  className="hover:bg-gradient-to-r hover:from-gray-50 hover:to-primary-50/30 transition-all duration-200 group"
+                  className="hover:bg-white/10 transition-all duration-200 group backdrop-blur-sm"
                 >
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap">
+                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-white">
                       {column.render ? column.render(row) : row[column.accessor]}
                     </td>
                   ))}
                   {actions && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white group-hover:bg-gradient-to-r group-hover:from-gray-50 group-hover:to-primary-50/30">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white/5 group-hover:bg-white/10 backdrop-blur-sm">
                       {actionMenu && actionButtons.length > 3 ? (
                         <div className="relative flex justify-end">
                           <button

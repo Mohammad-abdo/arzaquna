@@ -58,16 +58,34 @@ const Layout = () => {
   const isActive = (href) => location.pathname === href
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="flex h-screen overflow-hidden relative" dir={isRTL ? 'rtl' : 'ltr'} style={{
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+      backgroundSize: '400% 400%',
+      animation: 'gradient 15s ease infinite'
+    }}>
+      <style>{`
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
+      
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
       {/* Sidebar - Full Height */}
       <motion.div
         initial={false}
         animate={{
           width: sidebarOpen ? 256 : 80
         }}
-        className="bg-white shadow-xl transition-all duration-300 flex flex-col relative z-20 h-full"
+        className="glass-card shadow-2xl transition-all duration-300 flex flex-col relative z-20 h-full backdrop-blur-xl"
       >
-        <div className="flex items-center justify-between p-5 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-white">
+        <div className="flex items-center justify-between p-5 border-b border-white/20 bg-white/10 backdrop-blur-sm">
           <AnimatePresence>
             {sidebarOpen && (
               <motion.div
@@ -132,7 +150,7 @@ const Layout = () => {
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="p-4 border-t border-white/20 bg-white/10 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-3">
             <motion.div
               whileHover={{ scale: 1.05 }}
