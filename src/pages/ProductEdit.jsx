@@ -27,7 +27,9 @@ const ProductEdit = () => {
     weight: '',
     descriptionAr: '',
     descriptionEn: '',
-    price: ''
+    price: '',
+    rating: '',
+    isBestProduct: false
   })
 
   useEffect(() => {
@@ -50,7 +52,9 @@ const ProductEdit = () => {
           weight: product.weight || '',
           descriptionAr: product.descriptionAr || '',
           descriptionEn: product.descriptionEn || '',
-          price: product.price || ''
+          price: product.price || '',
+          rating: product.rating || '',
+          isBestProduct: product.isBestProduct || false
         })
         const imageUrls = getImageUrls(product.images)
         setExistingImages(imageUrls)
@@ -131,6 +135,8 @@ const ProductEdit = () => {
       if (formData.weight) formDataToSend.append('weight', formData.weight)
       if (formData.descriptionAr) formDataToSend.append('descriptionAr', formData.descriptionAr)
       if (formData.descriptionEn) formDataToSend.append('descriptionEn', formData.descriptionEn)
+      if (formData.rating) formDataToSend.append('rating', formData.rating)
+      formDataToSend.append('isBestProduct', formData.isBestProduct)
 
       newImages.forEach((image) => {
         formDataToSend.append('images', image)
@@ -252,6 +258,30 @@ const ProductEdit = () => {
                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Rating (0-5)</label>
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="5"
+                value={formData.rating}
+                onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="isBestProduct"
+                checked={formData.isBestProduct}
+                onChange={(e) => setFormData({ ...formData, isBestProduct: e.target.checked })}
+                className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+              />
+              <label htmlFor="isBestProduct" className="ml-2 text-sm font-medium text-gray-700">
+                Best Product (أفضل منتج)
+              </label>
             </div>
           </div>
 
