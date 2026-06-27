@@ -7,7 +7,7 @@ const getBaseURL = () => {
     return import.meta.env.VITE_API_URL
   }
   // Default to production API URL
-  return 'https://arzaquna.nodeteam.sit/api'
+  return 'https://arzaquna.nodeteam.site/api'
 }
 
 const api = axios.create({
