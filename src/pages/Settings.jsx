@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
+import { getImageUrl } from '../utils/imageHelper'
 
 const Settings = () => {
   const { user, checkAuth } = useAuth()
@@ -136,14 +137,6 @@ const Settings = () => {
     }
   }
 
-  const getImageUrl = (image) => {
-    if (!image) return null
-    if (image.startsWith('http://') || image.startsWith('https://')) {
-      return image
-    }
-    const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://arzaquna.developteam.site'
-    return `${baseUrl}${image.startsWith('/') ? image : `/${image}`}`
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">

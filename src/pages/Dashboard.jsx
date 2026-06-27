@@ -117,7 +117,7 @@ const Dashboard = () => {
     { title: t('dashboard.pendingApplications'),value: stats?.pendingApplications||0,icon: FiCheckCircle, color: 'teal',   trend: 'down', trendValue: 5 },
     { title: t('dashboard.pendingProducts'),   value: stats?.pendingProducts || 0,   icon: FiAlertCircle, color: 'red',    trend: null },
     { title: t('dashboard.categories'),        value: stats?.totalCategories || 0,   icon: FiLayers,      color: 'indigo', trend: null },
-    { title: t('dashboard.totalRevenue'),      value: `$${(stats?.totalRevenue||0).toLocaleString()}`, icon: FiDollarSign, color: 'sky', trend: 'up', trendValue: 18 },
+    { title: t('dashboard.totalRevenue'),      value: `${(stats?.totalRevenue||0).toLocaleString()} SAR`, icon: FiDollarSign, color: 'sky', trend: 'up', trendValue: 18 },
   ]
 
   const quickLinks = [

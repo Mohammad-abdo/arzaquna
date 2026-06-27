@@ -19,7 +19,7 @@ const UserView = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await api.get(`/users/${id}`)
+      const response = await api.get(`/admin/users/${id}`)
       if (response.data.success) {
         setUser(response.data.data)
       }
@@ -33,7 +33,7 @@ const UserView = () => {
 
   const toggleUserStatus = async () => {
     try {
-      const response = await api.put(`/users/${user.id}/status`, { isActive: !user.isActive })
+      const response = await api.put(`/admin/users/${user.id}/status`, { isActive: !user.isActive })
       if (response.data.success) {
         toast.success(!user.isActive ? t('users.userActivated') : t('users.userDeactivated'))
         fetchUser()
