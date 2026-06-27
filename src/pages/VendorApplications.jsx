@@ -1,187 +1,309 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiCheck, FiX, FiEye } from 'react-icons/fi'
+import { FiCheck, FiX, FiEye, FiUser, FiMapPin, FiPhone, FiBriefcase, FiFileText, FiClock } from 'react-icons/fi'
+
+const STATUS_CONFIG = {
+  PENDING:  { label: 'Pending',  color: 'bg-amber-100 text-amber-700 border-amber-200' },
+  APPROVED: { label: 'Approved', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  REJECTED: { label: 'Rejected', color: 'bg-red-100 text-red-700 border-red-200' },
+}
+
+const DetailModal = ({ app, onClose, onReview }) => {
+  const [rejectionReason, setRejectionReason] = useState('')
+  const [showReject, setShowReject] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const submit = async (status) => {
+    setLoading(true)
+    try {
+      const data = { status }
+      if (status === 'REJECTED' && rejectionReason) data.rejectionReason = rejectionReason
+      const res = await api.put(`/vendors/applications/${app.id}/review`, data)
+      if (res.data.success) {
+        toast.success(`Application ${status.toLowerCase()}`)
+        onReview()
+        onClose()
+      }
+    } catch {
+      toast.error('Failed to review application')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        onClick={e => e.stopPropagation()}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+      >
+        <div className="flex items-center justify-between p-5 border-b border-gray-100">
+          <div>
+            <h2 className="font-bold text-gray-900 text-lg">{app.storeName}</h2>
+            <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${STATUS_CONFIG[app.status]?.color}`}>{app.status}</span>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors"><FiX size={18} /></button>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-400 mb-1 flex items-center gap-1"><FiUser size={12} /> Applicant</p>
+              <p className="font-semibold text-sm text-gray-900">{app.user?.fullName}</p>
+              <p className="text-xs text-gray-500">{app.email}</p>
+              <p className="text-xs text-gray-500">{app.phone}</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-400 mb-1 flex items-center gap-1"><FiMapPin size={12} /> Location</p>
+              <p className="font-semibold text-sm text-gray-900">{app.city}</p>
+              <p className="text-xs text-gray-500">{app.region}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-400 mb-1 flex items-center gap-1"><FiBriefcase size={12} /> Experience</p>
+              <p className="font-semibold text-sm text-gray-900">{app.yearsOfExperience} years</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-3">
+              <p className="text-xs text-gray-400 mb-1 flex items-center gap-1"><FiPhone size={12} /> WhatsApp</p>
+              <p className="font-semibold text-sm text-gray-900">{app.whatsappNumber}</p>
+            </div>
+          </div>
+
+          {app.rejectionReason && (
+            <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+              <p className="text-xs font-semibold text-red-600 mb-1">Rejection Reason</p>
+              <p className="text-sm text-gray-700">{app.rejectionReason}</p>
+            </div>
+          )}
+
+          <p className="text-xs text-gray-400 flex items-center gap-1">
+            <FiClock size={12} />
+            Applied {new Date(app.createdAt).toLocaleString('en-SA', { dateStyle: 'medium', timeStyle: 'short' })}
+          </p>
+
+          {app.status === 'PENDING' && (
+            <div className="pt-1">
+              {!showReject ? (
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => submit('APPROVED')}
+                    disabled={loading}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                  >
+                    <FiCheck size={16} /> Approve
+                  </button>
+                  <button
+                    onClick={() => setShowReject(true)}
+                    disabled={loading}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                  >
+                    <FiX size={16} /> Reject
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <textarea
+                    value={rejectionReason}
+                    onChange={e => setRejectionReason(e.target.value)}
+                    placeholder="Reason for rejection (optional)..."
+                    rows={3}
+                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                  />
+                  <div className="flex gap-2">
+                    <button onClick={() => setShowReject(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm hover:bg-gray-50">Cancel</button>
+                    <button
+                      onClick={() => submit('REJECTED')}
+                      disabled={loading}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 disabled:opacity-50"
+                    >
+                      {loading && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                      Confirm Rejection
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
 
 const VendorApplications = () => {
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [statusFilter, setStatusFilter] = useState('PENDING')
   const [selectedApp, setSelectedApp] = useState(null)
-  const [showModal, setShowModal] = useState(false)
-  const [rejectionReason, setRejectionReason] = useState('')
 
-  useEffect(() => {
-    fetchApplications()
-  }, [page])
+  useEffect(() => { fetchApplications() }, [page, statusFilter])
 
   const fetchApplications = async () => {
     try {
       setLoading(true)
-      const response = await api.get('/vendors/applications', {
-        params: { page, limit: 10, status: 'PENDING' }
-      })
-      if (response.data.success) {
-        setApplications(response.data.data.applications)
-        setTotalPages(response.data.data.pagination.pages)
+      const params = { page, limit: 15 }
+      if (statusFilter) params.status = statusFilter
+      const res = await api.get('/vendors/applications', { params })
+      if (res.data.success) {
+        setApplications(res.data.data.applications)
+        setTotalPages(res.data.data.pagination.pages)
+        setTotal(res.data.data.pagination.total)
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to load applications')
     } finally {
       setLoading(false)
     }
   }
 
-  const reviewApplication = async (id, status) => {
-    try {
-      const data = { status }
-      if (status === 'REJECTED' && rejectionReason) {
-        data.rejectionReason = rejectionReason
-      }
-
-      const response = await api.put(`/vendors/applications/${id}/review`, data)
-      if (response.data.success) {
-        toast.success(`Application ${status.toLowerCase()}`)
-        setShowModal(false)
-        setSelectedApp(null)
-        setRejectionReason('')
-        fetchApplications()
-      }
-    } catch (error) {
-      toast.error('Failed to review application')
-    }
-  }
-
-  const openReviewModal = (app, status) => {
-    setSelectedApp(app)
-    if (status === 'REJECTED') {
-      setShowModal(true)
-    } else {
-      reviewApplication(app.id, status)
-    }
-  }
+  const tabs = [
+    { label: 'Pending', value: 'PENDING' },
+    { label: 'Approved', value: 'APPROVED' },
+    { label: 'Rejected', value: 'REJECTED' },
+    { label: 'All', value: '' },
+  ]
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Vendor Applications</h1>
+    <div className="p-6 space-y-5">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Vendor Applications</h1>
+        <p className="text-gray-500 text-sm mt-0.5">{total} applications</p>
+      </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      {/* Status tabs */}
+      <div className="flex gap-1.5">
+        {tabs.map(t => (
+          <button
+            key={t.value}
+            onClick={() => { setStatusFilter(t.value); setPage(1) }}
+            className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${statusFilter === t.value ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         {loading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <div className="p-12 text-center">
+            <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          </div>
+        ) : applications.length === 0 ? (
+          <div className="p-12 text-center">
+            <FiFileText size={40} className="text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500 font-medium">No applications found</p>
           </div>
         ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Store Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Applicant</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">City</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Experience</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Applied</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {applications.map((app) => (
-                    <tr key={app.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{app.storeName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div>{app.user.fullName}</div>
-                        <div className="text-gray-500">{app.email}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{app.city}, {app.region}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{app.yearsOfExperience} years</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(app.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => reviewApplication(app.id, 'APPROVED')}
-                            className="text-green-600 hover:text-green-900"
-                          >
-                            <FiCheck size={20} />
-                          </button>
-                          <button
-                            onClick={() => openReviewModal(app, 'REJECTED')}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <FiX size={20} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Store</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Applicant</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Location</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Experience</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map((app, idx) => (
+                  <motion.tr
+                    key={app.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: idx * 0.02 }}
+                    className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-4 py-3.5">
+                      <p className="text-sm font-semibold text-gray-900">{app.storeName}</p>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <p className="text-sm font-medium text-gray-800">{app.user?.fullName}</p>
+                      <p className="text-xs text-gray-400">{app.email}</p>
+                    </td>
+                    <td className="px-4 py-3.5 text-sm text-gray-600">{app.city}, {app.region}</td>
+                    <td className="px-4 py-3.5 text-sm text-gray-600">{app.yearsOfExperience} yrs</td>
+                    <td className="px-4 py-3.5">
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${STATUS_CONFIG[app.status]?.color}`}>
+                        {STATUS_CONFIG[app.status]?.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-xs text-gray-400">{new Date(app.createdAt).toLocaleDateString('en-SA')}</td>
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setSelectedApp(app)}
+                          className="p-1.5 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
+                          title="View details"
+                        >
+                          <FiEye size={15} />
+                        </button>
+                        {app.status === 'PENDING' && (
+                          <>
+                            <button
+                              onClick={async () => {
+                                try {
+                                  await api.put(`/vendors/applications/${app.id}/review`, { status: 'APPROVED' })
+                                  toast.success('Application approved')
+                                  fetchApplications()
+                                } catch { toast.error('Failed to approve') }
+                              }}
+                              className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                              title="Approve"
+                            >
+                              <FiCheck size={15} />
+                            </button>
+                            <button
+                              onClick={() => setSelectedApp(app)}
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Reject (with reason)"
+                            >
+                              <FiX size={15} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-6">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span className="px-4 py-2">Page {page} of {totalPages}</span>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages}
-                  className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+            <p className="text-sm text-gray-500">Page {page} of {totalPages}</p>
+            <div className="flex gap-2">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50">Previous</button>
+              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50">Next</button>
+            </div>
+          </div>
         )}
       </div>
 
-      {/* Rejection Modal */}
-      {showModal && selectedApp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Reject Application</h2>
-            <p className="text-gray-600 mb-4">Please provide a reason for rejection:</p>
-            <textarea
-              value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
-              rows="4"
-              placeholder="Rejection reason..."
-            />
-            <div className="flex gap-2 justify-end">
-              <button
-                onClick={() => {
-                  setShowModal(false)
-                  setSelectedApp(null)
-                  setRejectionReason('')
-                }}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => reviewApplication(selectedApp.id, 'REJECTED')}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-              >
-                Reject
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedApp && (
+          <DetailModal
+            app={selectedApp}
+            onClose={() => setSelectedApp(null)}
+            onReview={fetchApplications}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
 export default VendorApplications
-
-
-

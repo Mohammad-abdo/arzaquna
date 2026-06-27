@@ -121,23 +121,24 @@ const Users = () => {
       header: t('users.role'),
       accessor: 'role',
       icon: FiShield,
-      render: (user) => (
-        <span className="px-3 py-1.5 inline-flex text-xs font-medium rounded-md bg-gray-100 text-gray-700 border border-gray-300">
-          {user.role}
-        </span>
-      )
+      render: (user) => {
+        const roleColors = {
+          ADMIN:  'bg-purple-100 text-purple-700 border-purple-200',
+          VENDOR: 'bg-sky-100 text-sky-700 border-sky-200',
+          USER:   'bg-gray-100 text-gray-600 border-gray-200',
+        }
+        return (
+          <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${roleColors[user.role] || roleColors.USER}`}>
+            {user.role}
+          </span>
+        )
+      }
     },
     {
       header: t('common.status'),
       accessor: 'isActive',
       render: (user) => (
-        <span
-                      className={`px-3 py-1.5 inline-flex text-xs font-medium rounded-md ${
-                        user.isActive 
-                          ? 'bg-gray-100 text-gray-700 border border-gray-300' 
-                          : 'bg-gray-200 text-gray-700 border border-gray-300'
-                      }`}
-        >
+        <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${user.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-600 border-red-200'}`}>
           {user.isActive ? t('common.active') : t('common.inactive')}
         </span>
       )

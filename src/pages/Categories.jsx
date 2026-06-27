@@ -92,13 +92,7 @@ const Categories = () => {
       accessor: 'isActive',
       icon: FiCheckCircle,
       render: (category) => (
-        <span
-                      className={`px-3 py-1.5 inline-flex text-xs font-medium rounded-md ${
-                        category.isActive
-                          ? 'bg-gray-100 text-gray-700 border border-gray-300'
-                          : 'bg-gray-200 text-gray-700 border border-gray-300'
-                      }`}
-        >
+        <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${category.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-600 border-red-200'}`}>
           {category.isActive ? t('common.active') : t('common.inactive')}
         </span>
       )

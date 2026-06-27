@@ -97,20 +97,14 @@ const Products = () => {
       header: t('products.price'),
       accessor: 'price',
       render: (product) => (
-        <div className="text-sm font-semibold text-gray-700">${product.price}</div>
+        <div className="text-sm font-semibold text-gray-800">{Number(product.price).toLocaleString()} SAR</div>
       )
     },
     {
       header: t('common.status'),
       accessor: 'isApproved',
       render: (product) => (
-        <span
-                      className={`px-3 py-1 inline-flex text-xs leading-5 font-medium rounded-md ${
-                        product.isApproved
-                          ? 'bg-gray-100 text-gray-700 border border-gray-300'
-                          : 'bg-gray-200 text-gray-700 border border-gray-300'
-                      }`}
-        >
+        <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${product.isApproved ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>
           {product.isApproved ? t('common.approved') : t('common.pending')}
         </span>
       )
