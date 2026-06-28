@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { FiDownload, FiFileText, FiFile, FiCalendar, FiFilter, FiBarChart2 } from 'react-icons/fi'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import PageHeader from '../components/PageHeader'
 
 const Reports = () => {
   const { t } = useTranslation()
@@ -287,21 +288,14 @@ const Reports = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="mb-6">
-          <h1 className="text-4xl font-bold text-gray-800 flex items-center gap-3">
-            <FiBarChart2 className="text-primary-600" size={40} />
-            Reports
-          </h1>
-          <p className="text-gray-600 mt-1">Generate and export detailed reports</p>
-        </div>
+    <div className="page-shell">
+      <PageHeader
+        title={t('sidebar.reports')}
+        subtitle="Generate and export detailed reports"
+        breadcrumbs={[{ label: t('sidebar.reports') }]}
+      />
 
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-6">
+      <div className="card p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
@@ -351,7 +345,7 @@ const Reports = () => {
               <button
                 onClick={generateReport}
                 disabled={loading}
-                className="w-full px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 font-semibold flex items-center justify-center gap-2"
+                className="btn-primary w-full"
               >
                 {loading ? (
                   <>
@@ -582,12 +576,11 @@ const Reports = () => {
         )}
 
         {!reportData && (
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-12 text-center">
-            <FiBarChart2 size={64} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500 text-lg">Generate a report to view data</p>
+          <div className="card p-16 text-center">
+            <FiBarChart2 size={48} className="mx-auto text-slate-300 mb-4" />
+            <p className="text-slate-500">Generate a report to view data</p>
           </div>
         )}
-      </motion.div>
     </div>
   )
 }

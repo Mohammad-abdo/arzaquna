@@ -51,7 +51,13 @@
     "adminUsers": "Admin Users",
     "notifications": "Notifications",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "groups": {
+      "people": "People",
+      "catalog": "Catalog",
+      "operations": "Operations",
+      "system": "System"
+    }
   },
   "dashboard": {
     "title": "Dashboard",

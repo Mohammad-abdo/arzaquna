@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiCheck, FiX, FiEye, FiUser, FiMapPin, FiPhone, FiBriefcase, FiFileText, FiClock } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
+import FilterTabs from '../components/FilterTabs'
 
 const STATUS_CONFIG = {
   PENDING:  { label: 'Pending',  color: 'bg-amber-100 text-amber-700 border-amber-200' },
@@ -137,6 +141,7 @@ const DetailModal = ({ app, onClose, onReview }) => {
 }
 
 const VendorApplications = () => {
+  const { t } = useTranslation()
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -173,26 +178,18 @@ const VendorApplications = () => {
   ]
 
   return (
-    <div className="p-6 space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Vendor Applications</h1>
-        <p className="text-gray-500 text-sm mt-0.5">{total} applications</p>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.vendorApplications')}
+        subtitle={`${total} ${t('common.results')}`}
+        breadcrumbs={[{ label: t('sidebar.vendorApplications') }]}
+      />
+
+      <div className="card p-4">
+        <FilterTabs tabs={tabs} value={statusFilter} onChange={(v) => { setStatusFilter(v); setPage(1) }} />
       </div>
 
-      {/* Status tabs */}
-      <div className="flex gap-1.5">
-        {tabs.map(t => (
-          <button
-            key={t.value}
-            onClick={() => { setStatusFilter(t.value); setPage(1) }}
-            className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${statusFilter === t.value ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="card overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -235,9 +232,9 @@ const VendorApplications = () => {
                     <td className="px-4 py-3.5 text-sm text-gray-600">{app.city}, {app.region}</td>
                     <td className="px-4 py-3.5 text-sm text-gray-600">{app.yearsOfExperience} yrs</td>
                     <td className="px-4 py-3.5">
-                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${STATUS_CONFIG[app.status]?.color}`}>
+                      <Badge variant={app.status === 'APPROVED' ? 'success' : app.status === 'REJECTED' ? 'danger' : 'warning'} dot>
                         {STATUS_CONFIG[app.status]?.label}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3.5 text-xs text-gray-400">{new Date(app.createdAt).toLocaleDateString('en-SA')}</td>
                     <td className="px-4 py-3.5">

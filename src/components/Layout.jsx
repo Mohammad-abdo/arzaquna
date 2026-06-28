@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import Header from './Header'
@@ -16,21 +16,20 @@ import {
   FiFileText,
   FiSettings,
   FiMenu,
-  FiX,
   FiLogOut,
   FiCheckCircle,
   FiTrendingUp,
   FiUserPlus,
   FiBell,
   FiBarChart2,
-  FiChevronRight
+  FiChevronLeft,
+  FiChevronRight,
 } from 'react-icons/fi'
 
 const Layout = () => {
   const { t, i18n } = useTranslation()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const location = useLocation()
-  const navigate = useNavigate()
   const { user, logout } = useAuth()
   const isRTL = i18n.language === 'ar'
 
@@ -59,76 +58,74 @@ const Layout = () => {
 
   const groups = [
     { key: 'main', label: null },
-    { key: 'people', label: sidebarOpen ? 'People' : null },
-    { key: 'catalog', label: sidebarOpen ? 'Catalog' : null },
-    { key: 'ops', label: sidebarOpen ? 'Operations' : null },
-    { key: 'system', label: sidebarOpen ? 'System' : null },
+    { key: 'people', label: sidebarOpen ? t('sidebar.groups.people') : null },
+    { key: 'catalog', label: sidebarOpen ? t('sidebar.groups.catalog') : null },
+    { key: 'ops', label: sidebarOpen ? t('sidebar.groups.operations') : null },
+    { key: 'system', label: sidebarOpen ? t('sidebar.groups.system') : null },
   ]
 
-  const isActive = (href) => location.pathname === href || location.pathname.startsWith(href + '/')
+  const isActive = (href) =>
+    location.pathname === href || location.pathname.startsWith(href + '/')
+
+  const CollapseIcon = isRTL ? FiChevronRight : FiChevronLeft
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Sidebar */}
-      <motion.div
+    <div className="flex h-screen overflow-hidden bg-surface-subtle" dir={isRTL ? 'rtl' : 'ltr'}>
+      <motion.aside
         initial={false}
-        animate={{ width: sidebarOpen ? 256 : 72 }}
+        animate={{ width: sidebarOpen ? 260 : 76 }}
         transition={{ duration: 0.2, ease: 'easeInOut' }}
-        className="bg-gray-900 flex flex-col relative z-20 h-full flex-shrink-0"
+        className="bg-sidebar flex flex-col relative z-20 h-full flex-shrink-0 shadow-sidebar border-e border-sidebar-border"
       >
         {/* Logo */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-800">
-          <AnimatePresence>
-            {sidebarOpen && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex items-center gap-3"
-              >
-                <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">A</span>
-                </div>
-                <div>
-                  <h1 className="text-sm font-bold text-white whitespace-nowrap">Arzaquna</h1>
-                  <p className="text-xs text-gray-400">Admin Panel</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          {!sidebarOpen && (
-            <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mx-auto">
-              <span className="text-white font-bold text-sm">A</span>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
+          <div className={`flex items-center gap-3 ${!sidebarOpen ? 'mx-auto' : ''}`}>
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <span className="text-white font-bold text-sm">أ</span>
             </div>
-          )}
+            <AnimatePresence>
+              {sidebarOpen && (
+                <motion.div
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  className="overflow-hidden"
+                >
+                  <h1 className="text-sm font-bold text-white whitespace-nowrap">أرزقنا</h1>
+                  <p className="text-[11px] text-slate-400 whitespace-nowrap">لوحة الإدارة</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           {sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-1.5 rounded-lg hover:bg-gray-800 transition-colors text-gray-400 hover:text-white"
+              className="p-1.5 rounded-md hover:bg-sidebar-hover text-slate-500 hover:text-slate-300 transition-colors"
+              aria-label="Collapse sidebar"
             >
-              <FiX size={16} />
+              <CollapseIcon size={16} />
             </button>
           )}
         </div>
 
-        {/* Toggle button when closed */}
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className="mx-auto mt-3 p-2 rounded-lg hover:bg-gray-800 transition-colors text-gray-400 hover:text-white"
+            className="mx-auto mt-3 p-2 rounded-lg hover:bg-sidebar-hover text-slate-500 hover:text-slate-300 transition-colors"
+            aria-label="Expand sidebar"
           >
             <FiMenu size={18} />
           </button>
         )}
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2 scrollbar-hide">
+        <nav className="flex-1 overflow-y-auto py-4 px-3 scrollbar-thin">
           {groups.map((group) => {
             const items = navigation.filter((n) => n.group === group.key)
             return (
-              <div key={group.key} className="mb-2">
+              <div key={group.key} className="mb-1">
                 {group.label && (
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-1 mt-2">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2 mt-3">
                     {group.label}
                   </p>
                 )}
@@ -137,32 +134,30 @@ const Layout = () => {
                     const Icon = item.icon
                     const active = isActive(item.href)
                     return (
-                      <li key={item.name}>
+                      <li key={item.href}>
                         <Link
                           to={item.href}
                           title={!sidebarOpen ? item.name : undefined}
-                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 group relative ${
-                            active
-                              ? 'bg-sky-500 text-white'
-                              : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                          }`}
+                          className={`sidebar-link relative ${
+                            active ? 'sidebar-link-active' : 'sidebar-link-inactive'
+                          } ${!sidebarOpen ? 'justify-center px-2' : ''}`}
                         >
-                          <Icon size={18} className="flex-shrink-0" />
+                          {active && (
+                            <span className={`absolute top-1/2 -translate-y-1/2 w-0.5 h-5 bg-brand-500 rounded-full ${isRTL ? 'right-0' : 'left-0'}`} />
+                          )}
+                          <Icon size={18} className={`flex-shrink-0 ${active ? 'text-brand-400' : ''}`} />
                           <AnimatePresence>
                             {sidebarOpen && (
                               <motion.span
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: 'auto' }}
-                                exit={{ opacity: 0, width: 0 }}
-                                className="whitespace-nowrap text-sm font-medium overflow-hidden"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="whitespace-nowrap truncate"
                               >
                                 {item.name}
                               </motion.span>
                             )}
                           </AnimatePresence>
-                          {active && sidebarOpen && (
-                            <FiChevronRight size={14} className="ml-auto opacity-70" />
-                          )}
                         </Link>
                       </li>
                     )
@@ -174,57 +169,42 @@ const Layout = () => {
         </nav>
 
         {/* User footer */}
-        <div className="border-t border-gray-800 p-3">
-          <div className={`flex items-center gap-3 px-2 py-2 mb-1 rounded-lg ${sidebarOpen ? '' : 'justify-center'}`}>
-            <div className="w-8 h-8 rounded-full bg-sky-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div className="border-t border-sidebar-border p-3">
+          <div className={`flex items-center gap-3 px-2 py-2 rounded-lg ${sidebarOpen ? '' : 'justify-center'}`}>
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ring-2 ring-slate-600/50">
               {user?.fullName?.charAt(0).toUpperCase()}
             </div>
             <AnimatePresence>
               {sidebarOpen && (
                 <motion.div
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 'auto' }}
-                  exit={{ opacity: 0, width: 0 }}
-                  className="flex-1 overflow-hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex-1 min-w-0"
                 >
                   <p className="text-xs font-semibold text-white truncate">{user?.fullName}</p>
-                  <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                  <p className="text-[11px] text-slate-400 truncate">{user?.role}</p>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
           <button
             onClick={logout}
-            title={!sidebarOpen ? 'Logout' : undefined}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors duration-150 ${!sidebarOpen ? 'justify-center' : ''}`}
+            title={!sidebarOpen ? t('header.logout') : undefined}
+            className={`w-full mt-1 sidebar-link sidebar-link-inactive hover:!text-red-400 hover:!bg-red-500/10 ${!sidebarOpen ? 'justify-center px-2' : ''}`}
           >
             <FiLogOut size={16} className="flex-shrink-0" />
-            <AnimatePresence>
-              {sidebarOpen && (
-                <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 'auto' }}
-                  exit={{ opacity: 0, width: 0 }}
-                  className="whitespace-nowrap text-sm font-medium"
-                >
-                  {t('header.logout')}
-                </motion.span>
-              )}
-            </AnimatePresence>
+            {sidebarOpen && <span>{t('header.logout')}</span>}
           </button>
         </div>
-      </motion.div>
+      </motion.aside>
 
       {/* Main */}
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <Header />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex-1 overflow-y-auto"
-        >
+        <main className="flex-1 overflow-y-auto scrollbar-thin bg-surface-subtle">
           <Outlet />
-        </motion.div>
+        </main>
       </div>
     </div>
   )

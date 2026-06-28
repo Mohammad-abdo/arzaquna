@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiSend, FiSearch, FiX, FiTrash2, FiBell, FiRadio, FiUser, FiCheck } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
 
 const TYPE_CONFIG = {
   ORDER:   { color: 'bg-orange-100 text-orange-700 border-orange-200' },
@@ -140,6 +143,7 @@ const SendModal = ({ users, onClose, onSent }) => {
 }
 
 const Notifications = () => {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState([])
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -211,48 +215,41 @@ const Notifications = () => {
   const unreadCount = notifications.filter(n => !n.isRead).length
 
   return (
-    <div className="p-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            Notifications
-            {unreadCount > 0 && <span className="px-2 py-0.5 text-xs font-bold bg-sky-500 text-white rounded-full">{unreadCount} unread</span>}
-          </h1>
-          <p className="text-gray-500 text-sm mt-0.5">{total} total notifications</p>
-        </div>
-        <button onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors">
-          <FiSend size={16} /> Send Notification
-        </button>
-      </div>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.notifications')}
+        subtitle={`${total} ${t('common.results')}`}
+        breadcrumbs={[{ label: t('sidebar.notifications') }]}
+        badge={unreadCount > 0 ? <Badge variant="info">{unreadCount} unread</Badge> : null}
+        actions={
+          <button onClick={() => setShowModal(true)} className="btn-primary">
+            <FiSend size={16} /> Send Notification
+          </button>
+        }
+      />
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <div className="flex gap-1.5">
-          {[{ l: 'All', v: '' }, { l: 'Order', v: 'ORDER' }, { l: 'Offer', v: 'OFFER' }, { l: 'Message', v: 'MESSAGE' }].map(t => (
-            <button key={t.v} onClick={() => { setTypeFilter(t.v); setPage(1) }}
-              className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${typeFilter === t.v ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-              {t.l}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-1.5">
-          {[{ l: 'All', v: '' }, { l: 'Unread', v: 'false' }, { l: 'Read', v: 'true' }].map(t => (
-            <button key={t.v} onClick={() => { setReadFilter(t.v); setPage(1) }}
-              className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${readFilter === t.v ? 'bg-sky-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-              {t.l}
-            </button>
-          ))}
-        </div>
-        <div className="relative ml-auto w-56">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search user or title..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 bg-white" />
+      <div className="card p-4 space-y-3">
+        <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex gap-1.5 flex-wrap">
+            {[{ l: 'All', v: '' }, { l: 'Order', v: 'ORDER' }, { l: 'Offer', v: 'OFFER' }, { l: 'Message', v: 'MESSAGE' }].map(tab => (
+              <button key={tab.v} type="button" onClick={() => { setTypeFilter(tab.v); setPage(1) }}
+                className={typeFilter === tab.v ? 'tab-btn-active' : 'tab-btn'}>{tab.l}</button>
+            ))}
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
+            {[{ l: 'All', v: '' }, { l: 'Unread', v: 'false' }, { l: 'Read', v: 'true' }].map(tab => (
+              <button key={tab.v} type="button" onClick={() => { setReadFilter(tab.v); setPage(1) }}
+                className={readFilter === tab.v ? 'tab-btn-active' : 'tab-btn'}>{tab.l}</button>
+            ))}
+          </div>
+          <div className="relative ms-auto w-full sm:w-56">
+            <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search user or title..." className="input-field ps-9" />
+          </div>
         </div>
       </div>
 
-      {/* List */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="card overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />

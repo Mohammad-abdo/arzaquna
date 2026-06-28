@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiFileText, FiEdit2, FiX, FiSave, FiGlobe } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
 
 const CONTENT_TYPES = [
   { key: 'ABOUT',             label: 'About App',          icon: FiGlobe },
@@ -89,7 +91,7 @@ const ContentCard = ({ typeDef, content, onEdit }) => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      className="card overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-sky-50 flex items-center justify-center">
@@ -104,7 +106,7 @@ const ContentCard = ({ typeDef, content, onEdit }) => {
           </div>
         </div>
         <button onClick={onEdit}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors">
+          className="btn-primary !py-2 !px-3.5">
           <FiEdit2 size={13} /> {content ? 'Edit' : 'Create'}
         </button>
       </div>
@@ -134,6 +136,7 @@ const ContentCard = ({ typeDef, content, onEdit }) => {
 }
 
 const AppContent = () => {
+  const { t } = useTranslation()
   const [contents, setContents] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingType, setEditingType] = useState(null)
@@ -156,15 +159,16 @@ const AppContent = () => {
   const editingContent = contents.find(c => c.type === editingType)
 
   return (
-    <div className="p-6 space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">App Content</h1>
-        <p className="text-gray-500 text-sm mt-0.5">Manage bilingual app text</p>
-      </div>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.appContent')}
+        subtitle="Manage bilingual app text"
+        breadcrumbs={[{ label: t('sidebar.appContent') }]}
+      />
 
       {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+        <div className="card flex items-center justify-center py-16">
+          <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">

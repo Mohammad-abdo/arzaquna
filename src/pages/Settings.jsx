@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { getImageUrl } from '../utils/imageHelper'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
 
 const Settings = () => {
+  const { t } = useTranslation()
   const { user, checkAuth } = useAuth()
   const [formData, setFormData] = useState({
     fullName: user?.fullName || '',
@@ -139,23 +143,20 @@ const Settings = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Settings</h1>
-          <p className="text-gray-600">Manage your account settings and preferences</p>
-        </div>
+    <div className="page-shell">
+      <PageHeader
+        title={t('sidebar.settings')}
+        subtitle={t('header.settings')}
+        breadcrumbs={[{ label: t('sidebar.settings') }]}
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Section */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Profile Information</h2>
-                  <p className="text-gray-500 text-sm mt-1">Update your personal information</p>
-                </div>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="card p-6 lg:p-8 mb-6">
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-slate-900">Profile Information</h2>
+              <p className="text-slate-500 text-sm mt-1">Update your personal information</p>
+            </div>
 
               {/* Profile Image Upload */}
               <div className="mb-8">
@@ -172,7 +173,7 @@ const Settings = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-400 to-primary-600">
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700">
                           <span className="text-4xl font-bold text-white">
                             {user?.fullName?.charAt(0)?.toUpperCase() || 'A'}
                           </span>
@@ -203,7 +204,7 @@ const Settings = () => {
                     />
                     <label
                       htmlFor="profileImage"
-                      className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-md"
+                      className="btn-primary cursor-pointer"
                     >
                       <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -228,7 +229,7 @@ const Settings = () => {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                      className="input-field"
                     />
                   </div>
                   <div>
@@ -242,7 +243,7 @@ const Settings = () => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                      className="input-field"
                     />
                   </div>
                 </div>
@@ -265,16 +266,14 @@ const Settings = () => {
                     Role
                   </label>
                   <div className="px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
-                      {user?.role || 'USER'}
-                    </span>
+                    <Badge variant="brand">{user?.role || 'USER'}</Badge>
                   </div>
                 </div>
                 <div className="flex justify-end pt-4">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-8 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                    className="btn-primary !px-8"
                   >
                     {loading ? (
                       <span className="flex items-center">
@@ -293,12 +292,11 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Password Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="lg:col-span-1">
+            <div className="card p-6 lg:p-8">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Change Password</h2>
-                <p className="text-gray-500 text-sm mt-1">Update your password</p>
+                <h2 className="text-lg font-bold text-slate-900">Change Password</h2>
+                <p className="text-slate-500 text-sm mt-1">Update your password</p>
               </div>
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
@@ -311,7 +309,7 @@ const Settings = () => {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                    className="input-field"
                   />
                 </div>
                 <div>
@@ -325,7 +323,7 @@ const Settings = () => {
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                    className="input-field"
                   />
                 </div>
                 <div>
@@ -339,13 +337,13 @@ const Settings = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                    className="input-field"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={passwordLoading}
-                  className="w-full px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                  className="btn-primary w-full"
                 >
                   {passwordLoading ? (
                     <span className="flex items-center justify-center">
@@ -361,7 +359,6 @@ const Settings = () => {
                 </button>
               </form>
             </div>
-          </div>
         </div>
       </div>
     </div>

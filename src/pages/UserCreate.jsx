@@ -1,27 +1,23 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiArrowLeft, FiUser, FiMail, FiPhone, FiLock, FiShield } from 'react-icons/fi'
+import { FiUser, FiMail, FiPhone, FiLock, FiShield } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import FormActions from '../components/FormActions'
 
 const UserCreate = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-    role: 'USER'
+    fullName: '', email: '', phone: '', password: '', role: 'USER',
   })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-
     try {
       const response = await api.post('/admin/users', formData)
       if (response.data.success) {
@@ -35,127 +31,57 @@ const UserCreate = () => {
     }
   }
 
+  const set = (key, val) => setFormData((p) => ({ ...p, [key]: val }))
+
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={() => navigate('/users')}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <FiArrowLeft size={20} />
-          </button>
+    <div className="page-shell">
+      <PageHeader
+        title={t('users.addUser')}
+        subtitle="Create a new user account"
+        breadcrumbs={[{ label: t('sidebar.users'), href: '/users' }, { label: t('users.addUser') }]}
+      />
+
+      <form onSubmit={handleSubmit} className="card p-6 lg:p-8 max-w-2xl">
+        <div className="space-y-5">
+          {[
+            { key: 'fullName', label: t('users.fullName'), type: 'text', icon: FiUser, required: true },
+            { key: 'email', label: t('users.email'), type: 'email', icon: FiMail, required: true },
+            { key: 'phone', label: t('users.phone'), type: 'tel', icon: FiPhone, required: true },
+            { key: 'password', label: t('users.password'), type: 'password', icon: FiLock, required: true },
+          ].map((f) => (
+            <div key={f.key}>
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-1.5">
+                <f.icon size={16} className="text-brand-600" /> {f.label} *
+              </label>
+              <input
+                type={f.type}
+                value={formData[f.key]}
+                onChange={(e) => set(f.key, e.target.value)}
+                required={f.required}
+                className="input-field"
+              />
+            </div>
+          ))}
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">{t('users.addUser')}</h1>
-            <p className="text-gray-600 mt-1">Create a new user account</p>
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-1.5">
+              <FiShield size={16} className="text-brand-600" /> {t('users.role')} *
+            </label>
+            <select value={formData.role} onChange={(e) => set('role', e.target.value)} required className="select-field w-full">
+              <option value="USER">User</option>
+              <option value="VENDOR">Vendor</option>
+              <option value="ADMIN">Admin</option>
+            </select>
           </div>
         </div>
-
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-8 max-w-2xl">
-          <div className="space-y-6">
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiUser size={18} className="text-primary-600" />
-                {t('users.fullName')} *
-              </label>
-              <input
-                type="text"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="Enter full name"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiMail size={18} className="text-primary-600" />
-                {t('users.email')} *
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="user@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiPhone size={18} className="text-primary-600" />
-                {t('users.phone')} *
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="+1234567890"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiShield size={18} className="text-primary-600" />
-                {t('users.role')} *
-              </label>
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
-              >
-                <option value="USER">User</option>
-                <option value="VENDOR">Vendor</option>
-                <option value="ADMIN">Admin</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiLock size={18} className="text-primary-600" />
-                {t('users.password')} *
-              </label>
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="Enter password"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4 justify-end pt-8 mt-8 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={() => navigate('/users')}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-150 font-medium"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 font-medium"
-            >
-              {loading ? 'Creating...' : t('common.create')}
-            </button>
-          </div>
-        </form>
-      </motion.div>
+        <FormActions
+          onCancel={() => navigate('/users')}
+          submitLabel={t('common.create')}
+          loading={loading}
+          loadingLabel="Creating..."
+        />
+      </form>
     </div>
   )
 }
 
 export default UserCreate
-
-

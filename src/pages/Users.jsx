@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiSearch, FiUserCheck, FiUserX, FiPlus, FiUser, FiMail, FiPhone, FiShield } from 'react-icons/fi'
 import DataTable from '../components/DataTable'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
 
 const Users = () => {
   const { t } = useTranslation()
@@ -93,7 +94,7 @@ const Users = () => {
       icon: FiUser,
       render: (user) => (
         <div className="flex items-center">
-          <div className="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center text-white font-semibold mr-3">
+          <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white font-semibold me-3">
             {user.fullName?.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -122,15 +123,9 @@ const Users = () => {
       accessor: 'role',
       icon: FiShield,
       render: (user) => {
-        const roleColors = {
-          ADMIN:  'bg-purple-100 text-purple-700 border-purple-200',
-          VENDOR: 'bg-sky-100 text-sky-700 border-sky-200',
-          USER:   'bg-gray-100 text-gray-600 border-gray-200',
-        }
+        const roleVariant = { ADMIN: 'purple', VENDOR: 'info', USER: 'neutral' }
         return (
-          <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${roleColors[user.role] || roleColors.USER}`}>
-            {user.role}
-          </span>
+          <Badge variant={roleVariant[user.role] || 'neutral'}>{user.role}</Badge>
         )
       }
     },
@@ -138,54 +133,42 @@ const Users = () => {
       header: t('common.status'),
       accessor: 'isActive',
       render: (user) => (
-        <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${user.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-600 border-red-200'}`}>
+        <Badge variant={user.isActive ? 'success' : 'danger'} dot>
           {user.isActive ? t('common.active') : t('common.inactive')}
-        </span>
+        </Badge>
       )
     }
   ]
 
   return (
-    <div className="p-8 min-h-screen relative">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6 relative z-10"
-      >
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold text-gray-900">{t('users.title')}</h1>
-            <p className="text-gray-600 mt-1 text-lg">{t('users.subtitle')}</p>
-          </div>
-          <button
-            onClick={() => navigate('/users/create')}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 font-medium"
-          >
-            <FiPlus size={18} /> {t('users.addUser')}
+    <div className="page-shell">
+      <PageHeader
+        title={t('users.title')}
+        subtitle={t('users.subtitle')}
+        breadcrumbs={[{ label: t('users.title') }]}
+        actions={
+          <button onClick={() => navigate('/users/create')} className="btn-primary">
+            <FiPlus size={17} /> {t('users.addUser')}
           </button>
-        </div>
+        }
+      />
 
-        <div className="flex gap-4 mb-6">
+      <div className="card p-4 mb-5">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={18} />
+            <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={17} />
             <input
               type="text"
               placeholder={t('users.searchUsers')}
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(1)
-              }}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
+              onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+              className="input-field ps-10"
             />
           </div>
           <select
             value={roleFilter}
-            onChange={(e) => {
-              setRoleFilter(e.target.value)
-              setPage(1)
-            }}
-            className="px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
+            onChange={(e) => { setRoleFilter(e.target.value); setPage(1) }}
+            className="select-field sm:min-w-[160px]"
           >
             <option value="">{t('users.allRoles')}</option>
             <option value="USER">User</option>
@@ -193,7 +176,7 @@ const Users = () => {
             <option value="ADMIN">Admin</option>
           </select>
         </div>
-      </motion.div>
+      </div>
 
       <DataTable
         columns={columns}

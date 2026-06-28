@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiPlus, FiEdit, FiTrash2, FiX, FiTag } from 'react-icons/fi'
 import { getImageUrl } from '../utils/imageHelper'
+import PageHeader from '../components/PageHeader'
 
 const EMPTY_FORM = {
   vendorId: '',
@@ -205,6 +207,7 @@ const StatusModal = ({ editingStatus, vendors, onClose, onSaved }) => {
 }
 
 const Statuses = () => {
+  const { t } = useTranslation()
   const [statuses, setStatuses] = useState([])
   const [vendors, setVendors] = useState([])
   const [loading, setLoading] = useState(true)
@@ -262,23 +265,19 @@ const Statuses = () => {
   const openEdit = (s) => { setEditingStatus(s); setShowModal(true) }
 
   return (
-    <div className="p-6 space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Statuses & Offers</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{total} total entries</p>
-        </div>
-        <button
-          onClick={openAdd}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors"
-        >
-          <FiPlus size={16} /> Add Status
-        </button>
-      </div>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.statuses')}
+        subtitle={`${total} total entries`}
+        breadcrumbs={[{ label: t('sidebar.statuses') }]}
+        actions={
+          <button onClick={openAdd} className="btn-primary">
+            <FiPlus size={16} /> Add Status
+          </button>
+        }
+      />
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="card overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />

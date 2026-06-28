@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiArrowLeft, FiShoppingBag, FiUser, FiMail, FiPhone, FiMapPin, FiPackage, FiCheckCircle, FiXCircle, FiLock } from 'react-icons/fi'
+import { FiShoppingBag, FiUser, FiMail, FiPhone, FiMapPin, FiPackage, FiCheckCircle, FiLock } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import PageLoading from '../components/PageLoading'
+import Badge from '../components/Badge'
+import DetailField from '../components/DetailField'
 
 const VendorView = () => {
   const { t } = useTranslation()
@@ -13,17 +16,13 @@ const VendorView = () => {
   const [loading, setLoading] = useState(true)
   const [vendor, setVendor] = useState(null)
 
-  useEffect(() => {
-    fetchVendor()
-  }, [id])
+  useEffect(() => { fetchVendor() }, [id])
 
   const fetchVendor = async () => {
     try {
       const response = await api.get(`/vendors/${id}`)
-      if (response.data.success) {
-        setVendor(response.data.data)
-      }
-    } catch (error) {
+      if (response.data.success) setVendor(response.data.data)
+    } catch {
       toast.error('Failed to load vendor')
       navigate('/vendors')
     } finally {
@@ -33,216 +32,98 @@ const VendorView = () => {
 
   const toggleVendorStatus = async () => {
     try {
-      const response = await api.put(`/vendors/${vendor.id}/status`, {
-        isApproved: !vendor.isApproved
-      })
+      const response = await api.put(`/vendors/${vendor.id}/status`, { isApproved: !vendor.isApproved })
       if (response.data.success) {
         toast.success(!vendor.isApproved ? t('vendors.vendorApproved') : 'Vendor suspended')
         fetchVendor()
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update vendor status')
     }
   }
 
-  if (loading) {
-    return (
-      <div className="p-8 min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600"></div>
-      </div>
-    )
-  }
-
+  if (loading) return <PageLoading />
   if (!vendor) {
     return (
-      <div className="p-8 min-h-screen bg-gray-50">
-        <div className="text-center py-12">
-          <p className="text-gray-600">Vendor not found</p>
-        </div>
+      <div className="page-shell">
+        <div className="card p-12 text-center text-slate-500">Vendor not found</div>
       </div>
     )
   }
 
-  // Get categories from the categories relation instead of specialization
-  const categories = vendor.categories?.map(vc => vc.category) || []
+  const categories = vendor.categories?.map((vc) => vc.category) || []
 
   return (
-    <div className="p-8 min-h-screen bg-gray-50">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/vendors')}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-150"
-            >
-              <FiArrowLeft size={20} className="text-gray-700" />
-            </button>
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-lg bg-gray-700 flex items-center justify-center text-white">
-                <FiShoppingBag size={28} />
-              </div>
-              <div>
-                <h1 className="text-3xl font-semibold text-gray-900">{vendor.storeName}</h1>
-                <p className="text-gray-600 mt-1">{vendor.user?.fullName || 'N/A'}</p>
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={toggleVendorStatus}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-150 ${
-              vendor.isApproved
-                ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                : 'bg-gray-800 text-white hover:bg-gray-900'
-            }`}
-          >
-            {vendor.isApproved ? <FiLock size={18} /> : <FiCheckCircle size={18} />}
+    <div className="page-shell">
+      <PageHeader
+        title={vendor.storeName}
+        subtitle={vendor.user?.fullName || 'N/A'}
+        breadcrumbs={[{ label: t('sidebar.vendors'), href: '/vendors' }, { label: vendor.storeName }]}
+        actions={
+          <button onClick={toggleVendorStatus} className={vendor.isApproved ? 'btn-secondary' : 'btn-primary'}>
+            {vendor.isApproved ? <FiLock size={16} /> : <FiCheckCircle size={16} />}
             {vendor.isApproved ? 'Suspend' : 'Approve'}
           </button>
-        </div>
+        }
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                <FiShoppingBag className="text-gray-600" size={20} />
-                Store Information
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="card p-6">
+            <h2 className="text-sm font-bold text-slate-900 mb-5 flex items-center gap-2">
+              <FiShoppingBag size={16} className="text-brand-600" /> Store Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <DetailField label="Store Name" value={vendor.storeName} icon={FiShoppingBag} />
+              <DetailField label="Owner" value={vendor.user?.fullName} icon={FiUser} />
+              <DetailField label="City" value={vendor.city} icon={FiMapPin} />
+              <DetailField label="Region" value={vendor.region} icon={FiMapPin} />
+              <DetailField label="WhatsApp" value={vendor.whatsappNumber} icon={FiPhone} />
+              <DetailField label="Call Number" value={vendor.callNumber} icon={FiPhone} />
+              <DetailField label="Experience" value={`${vendor.yearsOfExperience} ${t('vendors.years')}`} icon={FiPackage} />
+            </div>
+          </div>
+
+          {categories.length > 0 && (
+            <div className="card p-6">
+              <h2 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <FiPackage size={16} className="text-brand-600" /> {t('vendors.specialization')}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiShoppingBag size={16} />
-                    Store Name
-                  </label>
-                  <p className="text-base font-semibold text-gray-900 mt-1">{vendor.storeName}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiUser size={16} />
-                    Owner
-                  </label>
-                  <p className="text-base font-semibold text-gray-900 mt-1">{vendor.user?.fullName || 'N/A'}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiMapPin size={16} />
-                    City
-                  </label>
-                  <p className="text-base text-gray-700 mt-1">{vendor.city}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiMapPin size={16} />
-                    Region
-                  </label>
-                  <p className="text-base text-gray-700 mt-1">{vendor.region}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiPhone size={16} />
-                    WhatsApp
-                  </label>
-                  <p className="text-base text-gray-700 mt-1">{vendor.whatsappNumber}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiPhone size={16} />
-                    Call Number
-                  </label>
-                  <p className="text-base text-gray-700 mt-1">{vendor.callNumber}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                    <FiPackage size={16} />
-                    Experience
-                  </label>
-                  <p className="text-base text-gray-700 mt-1">{vendor.yearsOfExperience} {t('vendors.years')}</p>
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Badge key={category.id} variant="neutral">{category.nameEn}</Badge>
+                ))}
               </div>
             </div>
+          )}
+        </div>
 
-            {categories.length > 0 && (
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FiPackage className="text-gray-600" size={20} />
-                  {t('vendors.specialization')}
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <span
-                      key={category.id}
-                      className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md text-sm font-medium border border-gray-200"
-                    >
-                      {category.nameEn}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+        <div className="space-y-6">
+          <div className="card p-6">
+            <h3 className="text-sm font-bold text-slate-900 mb-4">Owner Information</h3>
+            <div className="space-y-4">
+              <DetailField label="Full Name" value={vendor.user?.fullName} icon={FiUser} />
+              <DetailField label="Email" value={vendor.user?.email} icon={FiMail} />
+              <DetailField label="Phone" value={vendor.user?.phone} icon={FiPhone} />
+            </div>
           </div>
-
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-base font-semibold text-gray-900 mb-4">Owner Information</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1">
-                    <FiUser size={16} />
-                    Full Name
-                  </label>
-                  <p className="text-gray-700">{vendor.user?.fullName || 'N/A'}</p>
-                </div>
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1">
-                    <FiMail size={16} />
-                    Email
-                  </label>
-                  <p className="text-gray-700">{vendor.user?.email || 'N/A'}</p>
-                </div>
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 mb-1">
-                    <FiPhone size={16} />
-                    Phone
-                  </label>
-                  <p className="text-gray-700">{vendor.user?.phone || 'N/A'}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-base font-semibold text-gray-900 mb-4">Status</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Vendor Status</label>
-                  <div className="mt-2">
-                    <span
-                      className={`inline-flex px-3 py-1.5 text-sm font-medium rounded-md ${
-                        vendor.isApproved
-                          ? 'bg-gray-100 text-gray-700 border border-gray-300'
-                          : 'bg-gray-200 text-gray-700 border border-gray-300'
-                      }`}
-                    >
-                      {vendor.isApproved ? t('common.approved') : t('common.pending')}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Products Count</label>
-                  <div className="mt-2 flex items-center gap-2">
-                    <FiPackage size={18} className="text-gray-600" />
-                    <span className="text-xl font-semibold text-gray-900">{vendor._count?.products || 0}</span>
-                  </div>
-                </div>
-              </div>
+          <div className="card p-6">
+            <h3 className="text-sm font-bold text-slate-900 mb-4">Status</h3>
+            <div className="space-y-4">
+              <DetailField label="Vendor Status">
+                <Badge variant={vendor.isApproved ? 'success' : 'warning'} dot>
+                  {vendor.isApproved ? t('common.approved') : t('common.pending')}
+                </Badge>
+              </DetailField>
+              <DetailField label="Products Count" icon={FiPackage}>
+                <span className="text-xl font-bold text-slate-900">{vendor._count?.products || 0}</span>
+              </DetailField>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
 
 export default VendorView
-

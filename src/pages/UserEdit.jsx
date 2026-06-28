@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiArrowLeft, FiUser, FiMail, FiPhone, FiLock, FiShield, FiCheckCircle, FiXCircle } from 'react-icons/fi'
+import { FiUser, FiMail, FiPhone, FiLock, FiShield, FiCheckCircle, FiXCircle } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import PageLoading from '../components/PageLoading'
+import FormActions from '../components/FormActions'
 
 const UserEdit = () => {
   const { t } = useTranslation()
@@ -13,21 +15,13 @@ const UserEdit = () => {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    role: 'USER',
-    isActive: true,
-    password: ''
+    fullName: '', email: '', phone: '', role: 'USER', isActive: true, password: '',
   })
 
-  useEffect(() => {
-    fetchUser()
-  }, [id])
+  useEffect(() => { fetchUser() }, [id])
 
   const fetchUser = async () => {
     try {
-      setLoading(true)
       const response = await api.get(`/users/${id}`)
       if (response.data.success) {
         const user = response.data.data
@@ -37,10 +31,10 @@ const UserEdit = () => {
           phone: user.phone || '',
           role: user.role || 'USER',
           isActive: user.isActive !== undefined ? user.isActive : true,
-          password: ''
+          password: '',
         })
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to load user')
       navigate('/users')
     } finally {
@@ -51,18 +45,15 @@ const UserEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
-
     try {
       const updateData = {
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
         role: formData.role,
-        isActive: formData.isActive
+        isActive: formData.isActive,
       }
-
-      // Only include password if it's provided
-      if (formData.password && formData.password.length > 0) {
+      if (formData.password) {
         if (formData.password.length < 6) {
           toast.error('Password must be at least 6 characters')
           setSaving(false)
@@ -70,7 +61,6 @@ const UserEdit = () => {
         }
         updateData.password = formData.password
       }
-
       const response = await api.put(`/admin/users/${id}`, updateData)
       if (response.data.success) {
         toast.success(t('users.userUpdated'))
@@ -83,167 +73,73 @@ const UserEdit = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
-      </div>
-    )
-  }
+  const set = (key, val) => setFormData((p) => ({ ...p, [key]: val }))
+
+  if (loading) return <PageLoading />
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={() => navigate('/users')}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <FiArrowLeft size={20} />
-          </button>
+    <div className="page-shell">
+      <PageHeader
+        title={t('users.editUser')}
+        subtitle="Edit user information"
+        breadcrumbs={[{ label: t('sidebar.users'), href: '/users' }, { label: t('users.editUser') }]}
+      />
+
+      <form onSubmit={handleSubmit} className="card p-6 lg:p-8 max-w-2xl">
+        <div className="space-y-5">
+          {[
+            { key: 'fullName', label: t('users.fullName'), type: 'text', icon: FiUser },
+            { key: 'email', label: t('users.email'), type: 'email', icon: FiMail },
+            { key: 'phone', label: t('users.phone'), type: 'tel', icon: FiPhone },
+          ].map((f) => (
+            <div key={f.key}>
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-1.5">
+                <f.icon size={16} className="text-brand-600" /> {f.label} *
+              </label>
+              <input type={f.type} value={formData[f.key]} onChange={(e) => set(f.key, e.target.value)} required className="input-field" />
+            </div>
+          ))}
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">{t('users.editUser')}</h1>
-            <p className="text-gray-600 mt-1">Edit user information</p>
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-1.5">
+              <FiShield size={16} className="text-brand-600" /> {t('users.role')} *
+            </label>
+            <select value={formData.role} onChange={(e) => set('role', e.target.value)} required className="select-field w-full">
+              <option value="USER">User</option>
+              <option value="VENDOR">Vendor</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
+          <div>
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+              {formData.isActive ? <FiCheckCircle size={16} className="text-emerald-600" /> : <FiXCircle size={16} className="text-red-500" />}
+              Account Status
+            </label>
+            <div className="flex items-center gap-4">
+              {[{ val: true, label: 'Active' }, { val: false, label: 'Inactive' }].map((opt) => (
+                <label key={String(opt.val)} className="flex items-center gap-2 cursor-pointer text-sm">
+                  <input type="radio" name="isActive" checked={formData.isActive === opt.val} onChange={() => set('isActive', opt.val)} className="text-brand-600" />
+                  {opt.label}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-1.5">
+              <FiLock size={16} className="text-brand-600" /> {t('users.password')}
+            </label>
+            <input type="password" value={formData.password} onChange={(e) => set('password', e.target.value)} className="input-field" placeholder="Leave empty to keep current" />
+            <p className="text-xs text-slate-400 mt-1">Minimum 6 characters if provided</p>
           </div>
         </div>
-
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-8 max-w-2xl">
-          <div className="space-y-6">
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiUser size={18} className="text-primary-600" />
-                {t('users.fullName')} *
-              </label>
-              <input
-                type="text"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="Enter full name"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiMail size={18} className="text-primary-600" />
-                {t('users.email')} *
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="user@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiPhone size={18} className="text-primary-600" />
-                {t('users.phone')} *
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="+1234567890"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiShield size={18} className="text-primary-600" />
-                {t('users.role')} *
-              </label>
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
-              >
-                <option value="USER">User</option>
-                <option value="VENDOR">Vendor</option>
-                <option value="ADMIN">Admin</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                {formData.isActive ? (
-                  <FiCheckCircle size={18} className="text-green-600" />
-                ) : (
-                  <FiXCircle size={18} className="text-red-600" />
-                )}
-                Account Status
-              </label>
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="isActive"
-                    checked={formData.isActive === true}
-                    onChange={() => setFormData({ ...formData, isActive: true })}
-                    className="w-4 h-4 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700">Active</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="isActive"
-                    checked={formData.isActive === false}
-                    onChange={() => setFormData({ ...formData, isActive: false })}
-                    className="w-4 h-4 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700">Inactive</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiLock size={18} className="text-primary-600" />
-                {t('users.password')} (Leave empty to keep current password)
-              </label>
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-                placeholder="Enter new password (optional)"
-              />
-              <p className="text-xs text-gray-500 mt-1">Minimum 6 characters if provided</p>
-            </div>
-          </div>
-
-          <div className="flex gap-4 justify-end pt-8 mt-8 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={() => navigate('/users')}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-150 font-medium"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 font-medium"
-            >
-              {saving ? 'Updating...' : t('common.update')}
-            </button>
-          </div>
-        </form>
-      </motion.div>
+        <FormActions
+          onCancel={() => navigate('/users')}
+          submitLabel={t('common.update')}
+          loading={saving}
+          loadingLabel="Updating..."
+        />
+      </form>
     </div>
   )
 }
 
 export default UserEdit
-

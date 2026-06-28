@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiShoppingCart, FiSearch, FiX, FiUser, FiPackage, FiClock } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
+import FilterTabs from '../components/FilterTabs'
 
 const STATUS_CONFIG = {
   PENDING:     { label: 'Pending',     ar: 'قيد الانتظار', color: 'bg-amber-100 text-amber-700 border-amber-200' },
@@ -13,12 +17,12 @@ const STATUS_CONFIG = {
 }
 
 const StatusBadge = ({ status }) => {
+  const variantMap = {
+    PENDING: 'warning', CONFIRMED: 'info', IN_PROGRESS: 'purple',
+    COMPLETED: 'success', CANCELLED: 'danger',
+  }
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.PENDING
-  return (
-    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${cfg.color}`}>
-      {cfg.label}
-    </span>
-  )
+  return <Badge variant={variantMap[status] || 'warning'} dot>{cfg.label}</Badge>
 }
 
 const OrderDetailModal = ({ order, onClose, onStatusChange }) => {
@@ -135,6 +139,7 @@ const OrderDetailModal = ({ order, onClose, onStatusChange }) => {
 }
 
 const Orders = () => {
+  const { t } = useTranslation()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -185,63 +190,51 @@ const Orders = () => {
   ]
 
   return (
-    <div className="p-6 space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{total} total orders</p>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.orders')}
+        subtitle={`${total} ${t('common.results')}`}
+        breadcrumbs={[{ label: t('sidebar.orders') }]}
+      />
+
+      <div className="card p-4">
+        <div className="flex flex-wrap gap-3 items-center">
+          <FilterTabs tabs={tabs} value={statusFilter} onChange={(v) => { setStatusFilter(v); setPage(1) }} />
+          <div className="relative ms-auto w-full sm:w-64">
+            <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search customer or vendor..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="input-field ps-9"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="flex gap-1.5 flex-wrap">
-          {tabs.map(t => (
-            <button
-              key={t.value}
-              onClick={() => { setStatusFilter(t.value); setPage(1) }}
-              className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${statusFilter === t.value ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        <div className="relative ml-auto w-64">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-          <input
-            type="text"
-            placeholder="Search customer or vendor..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
-          />
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="card overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center">
-            <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="p-16 text-center">
+            <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center">
-            <FiShoppingCart size={40} className="text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500 font-medium">No orders found</p>
+          <div className="p-16 text-center">
+            <FiShoppingCart size={40} className="text-slate-300 mx-auto mb-3" />
+            <p className="text-slate-500 font-medium">No orders found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Order</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Customer</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Vendor</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Items</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Total</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                <tr className="bg-slate-50/80 border-b border-slate-200">
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Order</th>
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Customer</th>
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Vendor</th>
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Items</th>
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Total</th>
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Status</th>
+                  <th className="px-4 py-3 text-start text-[11px] font-bold text-slate-500 uppercase tracking-wide">Date</th>
                 </tr>
               </thead>
               <tbody>

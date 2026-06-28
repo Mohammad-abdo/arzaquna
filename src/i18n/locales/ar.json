@@ -51,7 +51,13 @@
     "adminUsers": "مستخدمي الإدارة",
     "notifications": "الإشعارات",
     "reports": "التقارير",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "groups": {
+      "people": "المستخدمون",
+      "catalog": "الكتالوج",
+      "operations": "العمليات",
+      "system": "النظام"
+    }
   },
   "dashboard": {
     "title": "لوحة التحكم",

@@ -38,7 +38,21 @@ function App() {
       }}
     >
       <AuthProvider>
-        <Toaster position="top-right" />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#0f172a',
+              color: '#f8fafc',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontFamily: 'Tajawal, sans-serif',
+            },
+            success: { iconTheme: { primary: '#10b981', secondary: '#f8fafc' } },
+            error: { iconTheme: { primary: '#ef4444', secondary: '#f8fafc' } },
+          }}
+        />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route

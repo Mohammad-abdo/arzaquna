@@ -2,14 +2,14 @@ import { motion } from 'framer-motion'
 import { FiTrendingUp, FiTrendingDown } from 'react-icons/fi'
 
 const colorMap = {
-  blue:   { bg: 'bg-blue-50',   icon: 'bg-blue-500',   text: 'text-blue-600',   trend: 'text-blue-500' },
-  green:  { bg: 'bg-green-50',  icon: 'bg-green-500',  text: 'text-green-600',  trend: 'text-green-500' },
-  purple: { bg: 'bg-purple-50', icon: 'bg-purple-500', text: 'text-purple-600', trend: 'text-purple-500' },
-  orange: { bg: 'bg-orange-50', icon: 'bg-orange-500', text: 'text-orange-600', trend: 'text-orange-500' },
-  red:    { bg: 'bg-red-50',    icon: 'bg-red-500',    text: 'text-red-600',    trend: 'text-red-500' },
-  sky:    { bg: 'bg-sky-50',    icon: 'bg-sky-500',    text: 'text-sky-600',    trend: 'text-sky-500' },
-  teal:   { bg: 'bg-teal-50',   icon: 'bg-teal-500',   text: 'text-teal-600',   trend: 'text-teal-500' },
-  indigo: { bg: 'bg-indigo-50', icon: 'bg-indigo-500', text: 'text-indigo-600', trend: 'text-indigo-500' },
+  blue:   { accent: 'border-l-blue-500',   icon: 'bg-blue-50 text-blue-600',   ring: 'ring-blue-100' },
+  green:  { accent: 'border-l-emerald-500', icon: 'bg-emerald-50 text-emerald-600', ring: 'ring-emerald-100' },
+  purple: { accent: 'border-l-violet-500', icon: 'bg-violet-50 text-violet-600', ring: 'ring-violet-100' },
+  orange: { accent: 'border-l-amber-500',  icon: 'bg-amber-50 text-amber-600',  ring: 'ring-amber-100' },
+  red:    { accent: 'border-l-red-500',    icon: 'bg-red-50 text-red-600',      ring: 'ring-red-100' },
+  sky:    { accent: 'border-l-sky-500',    icon: 'bg-sky-50 text-sky-600',      ring: 'ring-sky-100' },
+  teal:   { accent: 'border-l-teal-500',   icon: 'bg-teal-50 text-teal-600',    ring: 'ring-teal-100' },
+  indigo: { accent: 'border-l-indigo-500', icon: 'bg-indigo-50 text-indigo-600', ring: 'ring-indigo-100' },
 }
 
 const StatCard = ({ title, value, icon: Icon, color = 'blue', trend, trendValue, delay = 0 }) => {
@@ -17,24 +17,24 @@ const StatCard = ({ title, value, icon: Icon, color = 'blue', trend, trendValue,
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.2 }}
-      className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
+      transition={{ delay, duration: 0.25 }}
+      className={`card border-l-4 ${c.accent} p-5 hover:shadow-card-hover transition-shadow duration-200`}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1 truncate">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{value}</p>
+          <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide mb-2 truncate">{title}</p>
+          <p className="text-2xl font-bold text-slate-900 tracking-tight">{value}</p>
           {trend && (
-            <div className={`flex items-center gap-1 mt-2 text-xs font-semibold ${trend === 'up' ? 'text-emerald-600' : 'text-rose-500'}`}>
+            <div className={`flex items-center gap-1 mt-2.5 text-xs font-semibold ${trend === 'up' ? 'text-emerald-600' : 'text-red-500'}`}>
               {trend === 'up' ? <FiTrendingUp size={13} /> : <FiTrendingDown size={13} />}
-              <span>{trendValue}% this month</span>
+              <span>{trendValue}%</span>
             </div>
           )}
         </div>
-        <div className={`w-11 h-11 rounded-xl ${c.icon} flex items-center justify-center flex-shrink-0 ml-3`}>
-          <Icon className="text-white" size={20} />
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ring-4 ${c.icon} ${c.ring}`}>
+          <Icon size={20} />
         </div>
       </div>
     </motion.div>

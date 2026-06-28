@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiArrowLeft, FiUpload, FiImage, FiLayers, FiX } from 'react-icons/fi'
+import { FiUpload, FiImage, FiLayers, FiX } from 'react-icons/fi'
 import { getImageUrl } from '../utils/imageHelper'
+import PageHeader from '../components/PageHeader'
+import PageLoading from '../components/PageLoading'
+import FormActions from '../components/FormActions'
 
 const CategoryCreate = () => {
   const { t } = useTranslation()
@@ -109,42 +111,24 @@ const CategoryCreate = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    )
-  }
+  if (loading) return <PageLoading />
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={() => navigate('/categories')}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <FiArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="text-4xl font-bold text-gray-800">
-              {isEditMode ? t('categories.editCategory') : t('categories.addCategory')}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {isEditMode ? 'Edit category information' : 'Create a new product category'}
-            </p>
-          </div>
-        </div>
+    <div className="page-shell">
+      <PageHeader
+        title={isEditMode ? t('categories.editCategory') : t('categories.addCategory')}
+        subtitle={isEditMode ? 'Edit category information' : 'Create a new product category'}
+        breadcrumbs={[
+          { label: t('sidebar.categories'), href: '/categories' },
+          { label: isEditMode ? t('categories.editCategory') : t('categories.addCategory') },
+        ]}
+      />
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-8 max-w-2xl">
+      <form onSubmit={handleSubmit} className="card p-6 lg:p-8 max-w-2xl">
           <div className="space-y-6">
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiLayers size={18} className="text-primary-600" />
+                <FiLayers size={18} className="text-brand-600" />
                 {t('categories.arabicName')} *
               </label>
               <input
@@ -152,14 +136,14 @@ const CategoryCreate = () => {
                 value={formData.nameAr}
                 onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
+                className="input-field"
                 placeholder="اسم الفئة"
               />
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiLayers size={18} className="text-primary-600" />
+                <FiLayers size={18} className="text-brand-600" />
                 {t('categories.englishName')} *
               </label>
               <input
@@ -167,28 +151,28 @@ const CategoryCreate = () => {
                 value={formData.nameEn}
                 onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
+                className="input-field"
                 placeholder="Category Name"
               />
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiImage size={18} className="text-primary-600" />
+                <FiImage size={18} className="text-brand-600" />
                 Icon
               </label>
               <input
                 type="text"
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
+                className="input-field"
                 placeholder={t('categories.iconPlaceholder')}
               />
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <FiUpload size={18} className="text-primary-600" />
+                <FiUpload size={18} className="text-brand-600" />
                 {t('categories.image')}
               </label>
               <div className="space-y-4">
@@ -225,24 +209,13 @@ const CategoryCreate = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 justify-end pt-8 mt-8 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={() => navigate('/categories')}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-150 font-medium"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={loading || saving}
-              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 font-medium"
-            >
-              {loading ? 'Loading...' : saving ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? t('common.update') : t('common.create'))}
-            </button>
-          </div>
-        </form>
-      </motion.div>
+        <FormActions
+          onCancel={() => navigate('/categories')}
+          submitLabel={isEditMode ? t('common.update') : t('common.create')}
+          loading={saving}
+          loadingLabel={isEditMode ? 'Updating...' : 'Creating...'}
+        />
+      </form>
     </div>
   )
 }

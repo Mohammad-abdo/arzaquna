@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiCheck, FiX, FiPlus, FiEye, FiEdit } from 'react-icons/fi'
+import { FiPlus, FiSearch } from 'react-icons/fi'
 import DataTable from '../components/DataTable'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
+import FilterTabs from '../components/FilterTabs'
 
 const Products = () => {
   const { t } = useTranslation()
@@ -17,15 +19,12 @@ const Products = () => {
   const [filter, setFilter] = useState('pending')
   const [search, setSearch] = useState('')
 
-  useEffect(() => {
-    fetchProducts()
-  }, [page, filter, search])
+  useEffect(() => { fetchProducts() }, [page, filter, search])
 
   const fetchProducts = async () => {
     try {
       setLoading(true)
       const params = { page, limit: 10 }
-      
       if (filter === 'pending') {
         const response = await api.get('/admin/products/pending', { params })
         if (response.data.success) {
@@ -41,31 +40,11 @@ const Products = () => {
           setTotalPages(response.data.data.pagination.pages)
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to load products')
     } finally {
       setLoading(false)
     }
-  }
-
-  const approveProduct = async (product, isApproved) => {
-    try {
-      const response = await api.put(`/products/${product.id}/approve`, { isApproved })
-      if (response.data.success) {
-        toast.success(`Product ${isApproved ? 'approved' : 'rejected'}`)
-        fetchProducts()
-      }
-    } catch (error) {
-      toast.error('Failed to update product')
-    }
-  }
-
-  const handleView = (product) => {
-    navigate(`/products/${product.id}`)
-  }
-
-  const handleEdit = (product) => {
-    navigate(`/products/${product.id}/edit`)
   }
 
   const columns = [
@@ -74,133 +53,84 @@ const Products = () => {
       accessor: 'nameEn',
       render: (product) => (
         <div>
-          <div className="text-sm font-medium text-gray-700">{product.nameEn}</div>
-          <div className="text-sm text-gray-500">{product.nameAr}</div>
+          <div className="text-sm font-semibold text-slate-900">{product.nameEn}</div>
+          <div className="text-xs text-slate-500">{product.nameAr}</div>
         </div>
-      )
+      ),
     },
     {
       header: t('products.vendor'),
       accessor: 'vendor',
-      render: (product) => (
-        <div className="text-sm text-gray-700">{product.vendor?.user?.fullName || 'N/A'}</div>
-      )
+      render: (product) => <span className="text-sm text-slate-700">{product.vendor?.user?.fullName || 'N/A'}</span>,
     },
     {
       header: t('products.category'),
       accessor: 'category',
-      render: (product) => (
-        <div className="text-sm text-gray-700">{product.category?.nameEn || 'N/A'}</div>
-      )
+      render: (product) => <span className="text-sm text-slate-700">{product.category?.nameEn || 'N/A'}</span>,
     },
     {
       header: t('products.price'),
       accessor: 'price',
       render: (product) => (
-        <div className="text-sm font-semibold text-gray-800">{Number(product.price).toLocaleString()} SAR</div>
-      )
+        <span className="text-sm font-bold text-slate-900">{Number(product.price).toLocaleString()} SAR</span>
+      ),
     },
     {
       header: t('common.status'),
       accessor: 'isApproved',
       render: (product) => (
-        <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${product.isApproved ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>
+        <Badge variant={product.isApproved ? 'success' : 'warning'} dot>
           {product.isApproved ? t('common.approved') : t('common.pending')}
-        </span>
-      )
-    }
+        </Badge>
+      ),
+    },
+  ]
+
+  const filterTabs = [
+    { label: t('common.pending'), value: 'pending' },
+    { label: t('common.approved'), value: 'approved' },
+    { label: 'All', value: 'all' },
   ]
 
   return (
-    <div className="p-8 min-h-screen relative">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6 relative z-10"
-      >
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold text-gray-900">{t('products.title')}</h1>
-            <p className="text-gray-600 mt-1 text-lg">{t('products.subtitle')}</p>
-          </div>
-          <button
-            onClick={() => navigate('/products/create')}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-150 font-medium"
-          >
-            <FiPlus size={18} /> {t('common.create')} {t('products.product')}
+    <div className="page-shell">
+      <PageHeader
+        title={t('products.title')}
+        subtitle={t('products.subtitle')}
+        breadcrumbs={[{ label: t('products.title') }]}
+        actions={
+          <button onClick={() => navigate('/products/create')} className="btn-primary">
+            <FiPlus size={17} /> {t('common.create')} {t('products.product')}
           </button>
-        </div>
+        }
+      />
 
-        <div className="flex gap-4 mb-6">
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setFilter('pending')
-                setPage(1)
-              }}
-              className={`px-4 py-2 rounded-lg transition-colors duration-150 font-medium ${
-                filter === 'pending'
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {t('common.pending')}
-            </button>
-            <button
-              onClick={() => {
-                setFilter('approved')
-                setPage(1)
-              }}
-              className={`px-4 py-2 rounded-lg transition-colors duration-150 font-medium ${
-                filter === 'approved'
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {t('common.approved')}
-            </button>
-            <button
-              onClick={() => {
-                setFilter('all')
-                setPage(1)
-              }}
-              className={`px-4 py-2 rounded-lg transition-colors duration-150 font-medium ${
-                filter === 'all'
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              All
-            </button>
-          </div>
-          {filter !== 'pending' && (
+      <div className="card p-4 mb-5 space-y-3">
+        <FilterTabs tabs={filterTabs} value={filter} onChange={(v) => { setFilter(v); setPage(1) }} />
+        {filter !== 'pending' && (
+          <div className="relative max-w-md">
+            <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <input
               type="text"
               placeholder={t('products.searchProducts')}
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(1)
-              }}
-              className="flex-1 max-w-md px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
+              onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+              className="input-field ps-9"
             />
-          )}
-        </div>
-      </motion.div>
+          </div>
+        )}
+      </div>
 
-      <div className="relative z-10">
-        <DataTable
+      <DataTable
         columns={columns}
         data={products}
         loading={loading}
-        onView={handleView}
-        onEdit={handleEdit}
+        onView={(p) => navigate(`/products/${p.id}`)}
+        onEdit={(p) => navigate(`/products/${p.id}/edit`)}
         pagination={{ page, pages: totalPages }}
         onPageChange={setPage}
-        actions={true}
         emptyMessage={t('products.noProducts')}
       />
-      </div>
     </div>
   )
 }

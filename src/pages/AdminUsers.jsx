@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiPlus, FiX, FiSearch, FiShield, FiTrash2, FiUser, FiUsers, FiToggleLeft, FiToggleRight } from 'react-icons/fi'
+import { FiPlus, FiX, FiSearch, FiTrash2, FiUsers, FiToggleLeft, FiToggleRight } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
+import FilterTabs from '../components/FilterTabs'
 
 const ROLE_COLORS = {
   ADMIN:  'bg-purple-100 text-purple-700 border-purple-200',
@@ -81,6 +85,7 @@ const UserModal = ({ onClose, onSaved }) => {
 }
 
 const AdminUsers = () => {
+  const { t } = useTranslation()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -149,38 +154,37 @@ const AdminUsers = () => {
       )
     : users
 
+  const roleTabs = [
+    { label: 'All', value: '' },
+    { label: 'Admin', value: 'ADMIN' },
+    { label: 'Vendor', value: 'VENDOR' },
+    { label: 'User', value: 'USER' },
+  ]
+
   return (
-    <div className="p-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Users</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{total} users</p>
-        </div>
-        <button onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors">
-          <FiPlus size={16} /> Add Admin User
-        </button>
-      </div>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.adminUsers')}
+        subtitle={`${total} ${t('common.results')}`}
+        breadcrumbs={[{ label: t('sidebar.adminUsers') }]}
+        actions={
+          <button onClick={() => setShowModal(true)} className="btn-primary">
+            <FiPlus size={16} /> Add Admin User
+          </button>
+        }
+      />
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <div className="flex gap-1.5">
-          {[{ l: 'All', v: '' }, { l: 'Admin', v: 'ADMIN' }, { l: 'Vendor', v: 'VENDOR' }, { l: 'User', v: 'USER' }].map(t => (
-            <button key={t.v} onClick={() => { setRoleFilter(t.v); setPage(1) }}
-              className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${roleFilter === t.v ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-              {t.l}
-            </button>
-          ))}
-        </div>
-        <div className="relative ml-auto w-56">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name or email..."
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 bg-white outline-none" />
+      <div className="card p-4">
+        <div className="flex flex-wrap gap-3 items-center">
+          <FilterTabs tabs={roleTabs} value={roleFilter} onChange={(v) => { setRoleFilter(v); setPage(1) }} />
+          <div className="relative ms-auto w-full sm:w-56">
+            <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name or email..." className="input-field ps-9" />
+          </div>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="card overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -223,9 +227,9 @@ const AdminUsers = () => {
                       </select>
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${user.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200'}`}>
-                        {user.isActive ? 'Active' : 'Inactive'}
-                      </span>
+                      <Badge variant={user.isActive ? 'success' : 'danger'} dot>
+                        {user.isActive ? t('common.active') : t('common.inactive')}
+                      </Badge>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1">

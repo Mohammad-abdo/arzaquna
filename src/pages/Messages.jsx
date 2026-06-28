@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiMail, FiSearch, FiX, FiUser, FiMessageSquare, FiAlertCircle, FiHelpCircle, FiInfo } from 'react-icons/fi'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
+import FilterTabs from '../components/FilterTabs'
 
 const TYPE_CONFIG = {
   INQUIRY:   { label: 'Inquiry',   icon: FiHelpCircle,   color: 'bg-blue-100 text-blue-700 border-blue-200',   dot: 'bg-blue-500' },
@@ -12,13 +16,14 @@ const TYPE_CONFIG = {
 }
 
 const TypeBadge = ({ type }) => {
+  const variantMap = { INQUIRY: 'info', COMPLAINT: 'danger', SUPPORT: 'purple', GENERAL: 'neutral' }
   const cfg = TYPE_CONFIG[type] || TYPE_CONFIG.GENERAL
   const Icon = cfg.icon
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full border ${cfg.color}`}>
-      <Icon size={11} />
+    <Badge variant={variantMap[type] || 'neutral'}>
+      <Icon size={11} className="me-1" />
       {cfg.label}
-    </span>
+    </Badge>
   )
 }
 
@@ -105,6 +110,7 @@ const MessageDetailModal = ({ message, onClose, onMarkRead }) => {
 }
 
 const Messages = () => {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -155,47 +161,25 @@ const Messages = () => {
   ]
 
   return (
-    <div className="p-6 space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            Messages
-            {unreadCount > 0 && (
-              <span className="px-2 py-0.5 text-xs font-bold bg-sky-500 text-white rounded-full">{unreadCount} new</span>
-            )}
-          </h1>
-          <p className="text-gray-500 text-sm mt-0.5">{total} total messages</p>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.messages')}
+        subtitle={`${total} ${t('common.results')}`}
+        breadcrumbs={[{ label: t('sidebar.messages') }]}
+        badge={unreadCount > 0 ? <Badge variant="info">{unreadCount} new</Badge> : null}
+      />
+
+      <div className="card p-4">
+        <div className="flex flex-wrap gap-3 items-center">
+          <FilterTabs tabs={tabs} value={typeFilter} onChange={(v) => { setTypeFilter(v); setPage(1) }} />
+          <div className="relative ms-auto w-full sm:w-64">
+            <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input type="text" placeholder="Search sender, subject..." value={search} onChange={e => setSearch(e.target.value)} className="input-field ps-9" />
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="flex gap-1.5 flex-wrap">
-          {tabs.map(t => (
-            <button
-              key={t.value}
-              onClick={() => { setTypeFilter(t.value); setPage(1) }}
-              className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors ${typeFilter === t.value ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        <div className="relative ml-auto w-64">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-          <input
-            type="text"
-            placeholder="Search sender, subject..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
-          />
-        </div>
-      </div>
-
-      {/* Messages List */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="card overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />

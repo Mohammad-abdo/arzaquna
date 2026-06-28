@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiSearch, FiShoppingBag, FiUser, FiMapPin, FiPackage, FiCheckCircle, FiXCircle, FiLock } from 'react-icons/fi'
+import { FiSearch, FiShoppingBag, FiUser, FiMapPin, FiPackage } from 'react-icons/fi'
 import DataTable from '../components/DataTable'
+import PageHeader from '../components/PageHeader'
+import Badge from '../components/Badge'
 
 const Vendors = () => {
   const { t } = useTranslation()
@@ -16,42 +17,33 @@ const Vendors = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [search, setSearch] = useState('')
 
-  useEffect(() => {
-    fetchVendors()
-  }, [page, search])
+  useEffect(() => { fetchVendors() }, [page, search])
 
   const fetchVendors = async () => {
     try {
       setLoading(true)
       const params = { page, limit: 10 }
       if (search) params.search = search
-
       const response = await api.get('/vendors', { params })
       if (response.data.success) {
         setVendors(response.data.data.vendors)
         setTotalPages(response.data.data.pagination.pages)
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to load vendors')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleView = (vendor) => {
-    navigate(`/vendors/${vendor.id}`)
-  }
-
   const handleApprove = async (vendor) => {
     try {
-      const response = await api.put(`/vendors/${vendor.id}/status`, {
-        isApproved: true
-      })
+      const response = await api.put(`/vendors/${vendor.id}/status`, { isApproved: true })
       if (response.data.success) {
         toast.success(t('vendors.vendorApproved'))
         fetchVendors()
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to approve vendor')
     }
   }
@@ -59,14 +51,12 @@ const Vendors = () => {
   const handleReject = async (vendor) => {
     if (!window.confirm(`Reject ${vendor.storeName}?`)) return
     try {
-      const response = await api.put(`/vendors/${vendor.id}/status`, {
-        isApproved: false
-      })
+      const response = await api.put(`/vendors/${vendor.id}/status`, { isApproved: false })
       if (response.data.success) {
         toast.success('Vendor rejected')
         fetchVendors()
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to reject vendor')
     }
   }
@@ -74,14 +64,12 @@ const Vendors = () => {
   const handleBlock = async (vendor) => {
     if (!window.confirm(`Block ${vendor.storeName}?`)) return
     try {
-      const response = await api.put(`/vendors/${vendor.id}/status`, {
-        isApproved: false
-      })
+      const response = await api.put(`/vendors/${vendor.id}/status`, { isApproved: false })
       if (response.data.success) {
         toast.success('Vendor blocked successfully')
         fetchVendors()
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to block vendor')
     }
   }
@@ -92,33 +80,32 @@ const Vendors = () => {
       accessor: 'storeName',
       icon: FiShoppingBag,
       render: (vendor) => (
-        <div className="flex items-center">
-          <div className="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center text-white font-semibold mr-3">
-            <FiShoppingBag size={20} />
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center text-white">
+            <FiShoppingBag size={18} />
           </div>
           <div>
-            <div className="text-sm font-bold text-gray-900">{vendor.storeName}</div>
-            <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-              <FiUser size={12} />
-              {vendor.user?.fullName || 'N/A'}
+            <div className="text-sm font-semibold text-slate-900">{vendor.storeName}</div>
+            <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+              <FiUser size={11} /> {vendor.user?.fullName || 'N/A'}
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
       header: t('vendors.location'),
       accessor: 'city',
       icon: FiMapPin,
       render: (vendor) => (
-        <div className="flex items-center gap-2 text-sm text-gray-700">
-          <FiMapPin size={16} className="text-gray-400" />
+        <div className="flex items-center gap-2 text-sm text-slate-700">
+          <FiMapPin size={14} className="text-slate-400" />
           <div>
             <div className="font-medium">{vendor.city}</div>
-            <div className="text-xs text-gray-500">{vendor.region}</div>
+            <div className="text-xs text-slate-500">{vendor.region}</div>
           </div>
         </div>
-      )
+      ),
     },
     {
       header: t('vendors.products'),
@@ -126,66 +113,53 @@ const Vendors = () => {
       icon: FiPackage,
       render: (vendor) => (
         <div className="flex items-center gap-2">
-          <FiPackage size={18} className="text-primary-600" />
-          <span className="text-sm font-bold text-gray-900">
-            {vendor._count?.products || 0}
-          </span>
+          <FiPackage size={16} className="text-brand-600" />
+          <span className="text-sm font-bold text-slate-900">{vendor._count?.products || 0}</span>
         </div>
-      )
+      ),
     },
     {
       header: t('common.status'),
       accessor: 'isApproved',
       render: (vendor) => (
-        <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-full border ${vendor.isApproved ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>
+        <Badge variant={vendor.isApproved ? 'success' : 'warning'} dot>
           {vendor.isApproved ? t('common.approved') : t('common.pending')}
-        </span>
-      )
-    }
+        </Badge>
+      ),
+    },
   ]
 
   return (
-    <div className="p-8 min-h-screen relative">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6 relative z-10"
-      >
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold text-gray-900">{t('vendors.title')}</h1>
-            <p className="text-gray-600 mt-1 text-lg">{t('vendors.subtitle')}</p>
-          </div>
-        </div>
+    <div className="page-shell">
+      <PageHeader
+        title={t('vendors.title')}
+        subtitle={t('vendors.subtitle')}
+        breadcrumbs={[{ label: t('vendors.title') }]}
+      />
 
-        <div className="flex gap-4 mb-6">
-          <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={20} />
-            <input
-              type="text"
-              placeholder={t('vendors.searchVendors')}
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(1)
-              }}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150"
-            />
-          </div>
+      <div className="card p-4 mb-5">
+        <div className="relative max-w-lg">
+          <FiSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" size={17} />
+          <input
+            type="text"
+            placeholder={t('vendors.searchVendors')}
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+            className="input-field ps-10"
+          />
         </div>
-      </motion.div>
+      </div>
 
       <DataTable
         columns={columns}
         data={vendors}
         loading={loading}
-        onView={handleView}
+        onView={(v) => navigate(`/vendors/${v.id}`)}
         onApprove={handleApprove}
         onReject={handleReject}
         onBlock={handleBlock}
         pagination={{ page, pages: totalPages }}
         onPageChange={setPage}
-        actions={true}
         emptyMessage={t('vendors.noVendors')}
       />
     </div>

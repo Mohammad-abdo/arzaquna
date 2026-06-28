@@ -1,155 +1,181 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
-import toast from 'react-hot-toast'
-import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi'
+import { FiMail, FiLock, FiEye, FiEyeOff, FiShield } from 'react-icons/fi'
 
 const Login = () => {
+  const { i18n } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const isRTL = i18n.language === 'ar'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     const result = await login(email, password)
     setLoading(false)
-    if (result.success) {
-      navigate('/dashboard')
-    }
+    if (result.success) navigate('/dashboard')
   }
 
+  const features = [
+    isRTL ? 'إدارة المستخدمين والبائعين' : 'Manage users & vendors',
+    isRTL ? 'اعتماد المنتجات والطلبات' : 'Approve products & orders',
+    isRTL ? 'تقارير وإحصائيات شاملة' : 'Comprehensive analytics',
+  ]
+
   return (
-    <div className="min-h-screen flex">
-      {/* Left branding panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sky-600 via-sky-700 to-sky-900 flex-col items-center justify-center p-12 relative overflow-hidden">
-        {/* Background circles */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3" />
-        <div className="absolute top-1/3 right-0 w-48 h-48 bg-white/5 rounded-full translate-x-1/2" />
+    <div className="min-h-screen flex" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Brand panel */}
+      <div className="hidden lg:flex lg:w-[45%] xl:w-1/2 bg-sidebar flex-col justify-between p-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand-900/40 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-brand-600/10 rounded-full blur-3xl" />
+
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 flex items-center gap-3"
+        >
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">أ</span>
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white">أرزقنا</h1>
+            <p className="text-xs text-slate-400">{isRTL ? 'منصة الماشية' : 'Livestock Platform'}</p>
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative z-10 text-center"
+          transition={{ delay: 0.15 }}
+          className="relative z-10"
         >
-          <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 backdrop-blur-sm border border-white/30">
-            <span className="text-white font-bold text-3xl">A</span>
-          </div>
-          <h1 className="text-4xl font-bold text-white mb-3">Arzaquna</h1>
-          <p className="text-sky-200 text-lg mb-8">Admin Dashboard</p>
-          <div className="space-y-4 text-left">
-            {['Manage users & vendors', 'Approve products & orders', 'Track sales & analytics'].map((item, i) => (
+          <h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight text-balance mb-4">
+            {isRTL ? 'لوحة إدارة رسمية لمنصة أرزقنا' : 'Official Admin Console for Arzaquna'}
+          </h2>
+          <p className="text-slate-400 text-base leading-relaxed max-w-md mb-10">
+            {isRTL
+              ? 'منصة متكاملة لإدارة البائعين والمنتجات والطلبات والمحتوى بكل احترافية وأمان.'
+              : 'A complete platform to manage vendors, products, orders, and content with professionalism and security.'}
+          </p>
+          <div className="space-y-4">
+            {features.map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
-                className="flex items-center gap-3 text-sky-100"
+                className="flex items-center gap-3"
               >
-                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                <div className="w-8 h-8 rounded-lg bg-brand-500/20 border border-brand-500/30 flex items-center justify-center flex-shrink-0">
+                  <FiShield size={14} className="text-brand-400" />
                 </div>
-                <span className="text-sm">{item}</span>
+                <span className="text-sm text-slate-300">{item}</span>
               </motion.div>
             ))}
           </div>
         </motion.div>
+
+        <p className="relative z-10 text-xs text-slate-500">
+          © {new Date().getFullYear()} Arzaquna. {isRTL ? 'جميع الحقوق محفوظة' : 'All rights reserved.'}
+        </p>
       </div>
 
-      {/* Right login form */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 px-6 py-12">
+      {/* Form */}
+      <div className="flex-1 flex items-center justify-center bg-surface-subtle px-6 py-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className="w-full max-w-[420px]"
         >
-          {/* Mobile logo */}
-          <div className="lg:hidden text-center mb-8">
-            <div className="w-16 h-16 bg-sky-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">A</span>
+          <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center">
+              <span className="text-white font-bold text-xl">أ</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Arzaquna Admin</h1>
+            <div>
+              <h1 className="text-xl font-bold text-slate-900">أرزقنا</h1>
+              <p className="text-xs text-slate-500">{isRTL ? 'لوحة الإدارة' : 'Admin Panel'}</p>
+            </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h2>
-              <p className="text-gray-500 text-sm">Sign in to your admin account</p>
+          <div className="card p-8">
+            <div className="mb-7">
+              <h2 className="text-xl font-bold text-slate-900">
+                {isRTL ? 'تسجيل الدخول' : 'Sign in'}
+              </h2>
+              <p className="text-slate-500 text-sm mt-1">
+                {isRTL ? 'أدخل بيانات حساب الإدارة' : 'Enter your admin credentials'}
+              </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Email address
+                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5">
+                  {isRTL ? 'البريد الإلكتروني' : 'Email address'}
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <FiMail className={`absolute top-1/2 -translate-y-1/2 text-slate-400 ${isRTL ? 'right-3' : 'left-3'}`} size={17} />
                   <input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors bg-gray-50 focus:bg-white text-sm"
+                    className={`input-field ${isRTL ? 'pr-10' : 'pl-10'}`}
                     placeholder="admin@arzaquna.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Password
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5">
+                  {isRTL ? 'كلمة المرور' : 'Password'}
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <FiLock className={`absolute top-1/2 -translate-y-1/2 text-slate-400 ${isRTL ? 'right-3' : 'left-3'}`} size={17} />
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors bg-gray-50 focus:bg-white text-sm"
+                    className={`input-field ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'}`}
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className={`absolute top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 ${isRTL ? 'left-3' : 'right-3'}`}
                   >
-                    {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                    {showPassword ? <FiEyeOff size={17} /> : <FiEye size={17} />}
                   </button>
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 px-4 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2 flex items-center justify-center gap-2"
-              >
+              <button type="submit" disabled={loading} className="btn-primary w-full !py-3 mt-2">
                 {loading ? (
-                  <>
+                  <span className="flex items-center gap-2">
                     <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Signing in...
-                  </>
-                ) : 'Sign in'}
+                    {isRTL ? 'جاري الدخول...' : 'Signing in...'}
+                  </span>
+                ) : (isRTL ? 'دخول لوحة الإدارة' : 'Sign in to dashboard')}
               </button>
             </form>
 
-            <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-              <p className="text-xs text-gray-400">
-                Default: admin@arzaquna.com / admin123
+            <div className="mt-6 pt-5 border-t border-slate-100">
+              <p className="text-xs text-slate-400 text-center">
+                {isRTL ? 'الافتراضي:' : 'Default:'} admin@arzaquna.com / admin123
               </p>
             </div>
           </div>

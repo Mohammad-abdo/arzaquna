@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
-import { FiArrowLeft, FiUpload, FiX } from 'react-icons/fi'
+import { FiUpload, FiX } from 'react-icons/fi'
 import { getImageUrls } from '../utils/imageHelper'
+import PageHeader from '../components/PageHeader'
+import PageLoading from '../components/PageLoading'
+import FormActions from '../components/FormActions'
 
 const ProductEdit = () => {
   const { t } = useTranslation()
@@ -164,34 +166,17 @@ const ProductEdit = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    )
-  }
+  if (loading) return <PageLoading />
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={() => navigate('/products')}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <FiArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="text-4xl font-bold text-gray-800">Edit Product</h1>
-            <p className="text-gray-600 mt-1">Update product information</p>
-          </div>
-        </div>
+    <div className="page-shell">
+      <PageHeader
+        title="Edit Product"
+        subtitle="Update product information"
+        breadcrumbs={[{ label: t('sidebar.products'), href: '/products' }, { label: 'Edit' }]}
+      />
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <form onSubmit={handleSubmit} className="card p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Arabic Name *</label>
@@ -200,7 +185,7 @@ const ProductEdit = () => {
                 value={formData.nameAr}
                 onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
             <div>
@@ -210,7 +195,7 @@ const ProductEdit = () => {
                 value={formData.nameEn}
                 onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
             <div>
@@ -219,7 +204,7 @@ const ProductEdit = () => {
                 value={formData.categoryId}
                 onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               >
                 <option value="">Select Category</option>
                 {categories.map((cat) => (
@@ -238,7 +223,7 @@ const ProductEdit = () => {
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
             <div>
@@ -247,7 +232,7 @@ const ProductEdit = () => {
                 type="text"
                 value={formData.age}
                 onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
             <div>
@@ -256,7 +241,7 @@ const ProductEdit = () => {
                 type="text"
                 value={formData.weight}
                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
             <div>
@@ -268,7 +253,7 @@ const ProductEdit = () => {
                 max="5"
                 value={formData.rating}
                 onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
             <div className="flex items-center">
@@ -291,7 +276,7 @@ const ProductEdit = () => {
               value={formData.descriptionAr}
               onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="input-field resize-none"
             />
           </div>
 
@@ -301,7 +286,7 @@ const ProductEdit = () => {
               value={formData.descriptionEn}
               onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="input-field resize-none"
             />
           </div>
 
@@ -366,7 +351,7 @@ const ProductEdit = () => {
               <button
                 type="button"
                 onClick={addSpecification}
-                className="px-3 py-1 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                className="btn-primary !py-1.5 !px-3 text-sm"
               >
                 Add Specification
               </button>
@@ -378,14 +363,14 @@ const ProductEdit = () => {
                   placeholder="Key"
                   value={spec.key || ''}
                   onChange={(e) => updateSpecification(index, 'key', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  className="input-field"
                 />
                 <input
                   type="text"
                   placeholder="Value (AR)"
                   value={spec.valueAr || ''}
                   onChange={(e) => updateSpecification(index, 'valueAr', e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  className="input-field"
                 />
                 <div className="flex gap-2">
                   <input
@@ -393,7 +378,7 @@ const ProductEdit = () => {
                     placeholder="Value (EN)"
                     value={spec.valueEn || ''}
                     onChange={(e) => updateSpecification(index, 'valueEn', e.target.value)}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    className="flex-1 input-field"
                   />
                   <button
                     type="button"
@@ -407,24 +392,13 @@ const ProductEdit = () => {
             ))}
           </div>
 
-          <div className="flex gap-4 justify-end pt-6 border-t">
-            <button
-              type="button"
-              onClick={() => navigate('/products')}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Updating...' : 'Update Product'}
-            </button>
-          </div>
+          <FormActions
+            onCancel={() => navigate('/products')}
+            submitLabel="Update Product"
+            loading={saving}
+            loadingLabel="Updating..."
+          />
         </form>
-      </motion.div>
     </div>
   )
 }

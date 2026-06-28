@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiPlus, FiEdit, FiTrash2, FiX, FiUpload, FiImage } from 'react-icons/fi'
 import { getImageUrl } from '../utils/imageHelper'
+import PageHeader from '../components/PageHeader'
 
 const EMPTY_FORM = { titleAr: '', titleEn: '', descriptionAr: '', descriptionEn: '', icon: '', link: '', order: 0, image: null }
 
@@ -143,6 +145,7 @@ const SliderModal = ({ editingSlider, onClose, onSaved }) => {
 }
 
 const Sliders = () => {
+  const { t } = useTranslation()
   const [sliders, setSliders] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -177,26 +180,27 @@ const Sliders = () => {
   const openEdit = (s) => { setEditingSlider(s); setShowModal(true) }
 
   return (
-    <div className="p-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Sliders</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{sliders.length} slider{sliders.length !== 1 ? 's' : ''}</p>
-        </div>
-        <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors">
-          <FiPlus size={16} /> Add Slider
-        </button>
-      </div>
+    <div className="page-shell space-y-5">
+      <PageHeader
+        title={t('sidebar.sliders')}
+        subtitle={`${sliders.length} slider${sliders.length !== 1 ? 's' : ''}`}
+        breadcrumbs={[{ label: t('sidebar.sliders') }]}
+        actions={
+          <button onClick={openAdd} className="btn-primary">
+            <FiPlus size={16} /> Add Slider
+          </button>
+        }
+      />
 
       {loading ? (
-        <div className="p-12 text-center">
-          <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="card p-16 text-center">
+          <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       ) : sliders.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
-          <FiImage size={40} className="text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 font-medium">No sliders yet</p>
-          <button onClick={openAdd} className="mt-3 text-sm text-sky-600 hover:underline">Add the first slider</button>
+        <div className="card p-16 text-center">
+          <FiImage size={40} className="text-slate-300 mx-auto mb-3" />
+          <p className="text-slate-500 font-medium">No sliders yet</p>
+          <button onClick={openAdd} className="mt-3 text-sm text-brand-700 hover:underline">Add the first slider</button>
         </div>
       ) : (
         <div className="space-y-3">
@@ -208,7 +212,7 @@ const Sliders = () => {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.04 }}
-                className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-4 hover:shadow-sm transition-shadow"
+                className="card p-4 flex items-center gap-4 hover:shadow-card-hover transition-shadow"
               >
                 {slider.image ? (
                   <img src={getImageUrl(slider.image)} alt={slider.titleEn} className="w-32 h-20 object-cover rounded-xl flex-shrink-0" />
